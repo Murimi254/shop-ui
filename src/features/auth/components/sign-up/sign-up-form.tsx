@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
 import googleIcon from "../../../../../public/images/auth/googleIcon.png";
 
-export function LoginForm() {
+export function SignUpForm() {
   return (
     <form className="w-[24rem] ">
       <h2 className="text-[2.25rem] mb-6">Create an Account</h2>
