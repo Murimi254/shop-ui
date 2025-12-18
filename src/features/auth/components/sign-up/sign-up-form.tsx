@@ -2,11 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
-import googleIcon from "../../../../../public/images/auth/googleIcon.png";
+import googleIcon from "/images/auth/googleIcon.png";
+import { PasswordInput } from "../password-input";
+import type { FormEvent } from "react";
 
 export function SignUpForm() {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries());
+    console.log({ ...data });
+  }
   return (
-    <form className="w-[24rem] ">
+    <form onSubmit={handleSubmit} className="w-[24rem] ">
       <h2 className="text-[2.25rem] mb-6">Create an Account</h2>
       <p className="mb-12">Enter your details below</p>
       <FieldGroup>
@@ -27,23 +36,11 @@ export function SignUpForm() {
           <FieldError />
         </Field>
         <Field>
-          <Input
-            name="password"
-            placeholder="Password"
-            type="password"
-            className="border-0 border-b-2 rounded-none focus-visible:ring-0 shadow-none placeholder:text-muted-foreground focus:placeholder:text-transparent"
-          />
+          <PasswordInput name="password" placeholder="Password" />
           <FieldError />
         </Field>
         <Field>
-          <div>
-            <Input
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              type="password"
-              className="border-0 border-b-2 rounded-none focus-visible:ring-0 shadow-none placeholder:text-muted-foreground focus:placeholder:text-transparent"
-            />
-          </div>
+          <PasswordInput name="passwordConfirm" placeholder="Confirm Password" />
           <FieldError />
         </Field>
         <Field>
