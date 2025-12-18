@@ -6,7 +6,7 @@ import { TopHeader } from "./components/top-header";
 
 export function Header() {
   return (
-    <header>
+    <header className="sticky top-0 z-10 bg-white">
       <TopHeader />
       <div className="flex px-40 pt-2  items-center justify-between mt-2.5">
         <Logo />
