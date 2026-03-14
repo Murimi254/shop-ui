@@ -7,6 +7,7 @@ import { PasswordInput } from "../password-input";
 import type { FormEvent } from "react";
 
 export function SignUpForm() {
+  // const [singUpInputs,setSignUpInputs] = useState()
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
