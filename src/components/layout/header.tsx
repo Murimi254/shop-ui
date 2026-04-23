@@ -4,7 +4,7 @@ import { selectWishlistCount } from "@/store/slices/wishlistSlice";
 import { selectIsAuthenticated } from "@/store/slices/authSlice";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utility-functions";
 import { selectCartCount } from "@/store/slices/cartSlice";
 import { useAppSelector } from "@/store/hooks";
 
