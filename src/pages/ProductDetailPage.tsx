@@ -10,8 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/slices/cartSlice";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
 import { PRODUCT_DETAIL, FLASH_SALE_PRODUCTS } from "@/data/products";
-import { cn } from "@/lib/utils";
-
+import { cn } from "@/utils/utility-functions";
 export function ProductDetailPage() {
   // In prod: fetch product by useParams().productId from your API
   const product = PRODUCT_DETAIL;
@@ -34,7 +33,7 @@ export function ProductDetailPage() {
         quantity,
         color: product.colors?.[selectedColor],
         size: selectedSize,
-      })
+      }),
     );
   };
 
@@ -47,13 +46,7 @@ export function ProductDetailPage() {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
-      <Breadcrumb
-        items={[
-          { label: "Account", to: "/account" },
-          { label: "Gaming", to: "/" },
-          { label: product.name },
-        ]}
-      />
+      <Breadcrumb items={[{ label: "Account", to: "/account" }, { label: "Gaming", to: "/" }, { label: product.name }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
         {/* ─── Image Gallery ─── */}
@@ -66,7 +59,7 @@ export function ProductDetailPage() {
                 onClick={() => setSelectedImage(i)}
                 className={cn(
                   "w-[110px] h-[110px] bg-[#f5f5f5] rounded flex items-center justify-center border-2 transition-colors",
-                  selectedImage === i ? "border-[#db4444]" : "border-transparent"
+                  selectedImage === i ? "border-[#db4444]" : "border-transparent",
                 )}
               >
                 <img src={src} alt="" className="w-20 h-20 object-contain" />
@@ -76,11 +69,7 @@ export function ProductDetailPage() {
 
           {/* Main image */}
           <div className="flex-1 bg-[#f5f5f5] rounded flex items-center justify-center min-h-[400px]">
-            <img
-              src={thumbnails[selectedImage] ?? product.image}
-              alt={product.name}
-              className="w-full h-full object-contain max-h-[420px] p-6"
-            />
+            <img src={thumbnails[selectedImage] ?? product.image} alt={product.name} className="w-full h-full object-contain max-h-[420px] p-6" />
           </div>
         </div>
 
@@ -99,9 +88,7 @@ export function ProductDetailPage() {
           </div>
 
           <p className="text-2xl font-bold mb-4">${product.price.toFixed(2)}</p>
-          <p className="text-sm text-gray-600 mb-6 border-b border-gray-200 pb-6">
-            {product.description}
-          </p>
+          <p className="text-sm text-gray-600 mb-6 border-b border-gray-200 pb-6">{product.description}</p>
 
           {/* Colours */}
           {product.colors && (
@@ -114,7 +101,7 @@ export function ProductDetailPage() {
                     onClick={() => setSelectedColor(i)}
                     className={cn(
                       "w-5 h-5 rounded-full border-2 transition-all",
-                      selectedColor === i ? "border-black scale-110" : "border-transparent"
+                      selectedColor === i ? "border-black scale-110" : "border-transparent",
                     )}
                     style={{ backgroundColor: color }}
                   />
@@ -128,15 +115,13 @@ export function ProductDetailPage() {
             <div className="flex items-center gap-4 mb-6">
               <span className="text-sm font-medium w-16">Size:</span>
               <div className="flex gap-2">
-                {product.sizes.map((size) => (
+                {product.sizes.map(size => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={cn(
                       "w-9 h-9 border rounded text-sm font-medium transition-colors",
-                      selectedSize === size
-                        ? "bg-[#db4444] text-white border-[#db4444]"
-                        : "border-gray-300 hover:border-[#db4444]"
+                      selectedSize === size ? "bg-[#db4444] text-white border-[#db4444]" : "border-gray-300 hover:border-[#db4444]",
                     )}
                   >
                     {size}
@@ -150,7 +135,7 @@ export function ProductDetailPage() {
           <div className="flex items-center gap-4 mb-6">
             <div className="flex items-center border border-gray-300 rounded overflow-hidden">
               <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 className="w-10 h-11 flex items-center justify-center hover:bg-gray-100 transition-colors"
               >
                 <Minus size={16} />
@@ -159,7 +144,7 @@ export function ProductDetailPage() {
                 {String(quantity).padStart(2, "0")}
               </span>
               <button
-                onClick={() => setQuantity((q) => q + 1)}
+                onClick={() => setQuantity(q => q + 1)}
                 className="w-10 h-11 flex items-center justify-center bg-[#db4444] text-white hover:bg-[#c03535] transition-colors"
               >
                 <Plus size={16} />
@@ -174,9 +159,7 @@ export function ProductDetailPage() {
               onClick={() => dispatch(toggleWishlist(product))}
               className={cn(
                 "w-11 h-11 border rounded flex items-center justify-center transition-colors",
-                isWishlisted
-                  ? "border-[#db4444] text-[#db4444]"
-                  : "border-gray-300 hover:border-[#db4444] hover:text-[#db4444]"
+                isWishlisted ? "border-[#db4444] text-[#db4444]" : "border-gray-300 hover:border-[#db4444] hover:text-[#db4444]",
               )}
             >
               <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
@@ -189,9 +172,7 @@ export function ProductDetailPage() {
               <Truck size={36} className="text-black flex-shrink-0 mt-1" />
               <div>
                 <p className="font-medium text-sm mb-1">Free Delivery</p>
-                <p className="text-xs text-gray-500 underline cursor-pointer">
-                  Enter your postal code for Delivery Availability
-                </p>
+                <p className="text-xs text-gray-500 underline cursor-pointer">Enter your postal code for Delivery Availability</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-4">
@@ -199,8 +180,7 @@ export function ProductDetailPage() {
               <div>
                 <p className="font-medium text-sm mb-1">Return Delivery</p>
                 <p className="text-xs text-gray-500">
-                  Free 30 Days Delivery Returns.{" "}
-                  <span className="underline cursor-pointer">Details</span>
+                  Free 30 Days Delivery Returns. <span className="underline cursor-pointer">Details</span>
                 </p>
               </div>
             </div>
@@ -212,7 +192,7 @@ export function ProductDetailPage() {
       <section>
         <SectionLabel tag="Related Item" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {FLASH_SALE_PRODUCTS.slice(0, 4).map((p) => (
+          {FLASH_SALE_PRODUCTS.slice(0, 4).map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

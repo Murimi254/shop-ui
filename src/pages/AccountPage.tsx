@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectUser, updateProfile, logout } from "@/store/slices/authSlice";
-import { cn } from "@/lib/utils";
-
+import { cn } from "@/utils/utility-functions";
 type Section = "profile" | "address" | "payment" | "returns" | "cancellations" | "wishlist";
 
 export function AccountPage() {

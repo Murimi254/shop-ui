@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-
+import { cn } from "@/utils/utility-functions";
 interface BreadcrumbItem {
   label: string;
   to?: string;
@@ -23,9 +22,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
               {item.label}
             </Link>
           ) : (
-            <span className={cn(i === items.length - 1 && "text-black font-medium")}>
-              {item.label}
-            </span>
+            <span className={cn(i === items.length - 1 && "text-black font-medium")}>{item.label}</span>
           )}
         </span>
       ))}

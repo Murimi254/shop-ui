@@ -1,6 +1,5 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
-
+import { cn } from "@/utils/utility-functions";
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: "sale" | "new" | "default";
 }
@@ -13,7 +12,7 @@ export function Badge({ className, variant = "default", ...props }: BadgeProps) 
         variant === "sale" && "bg-[#db4444]",
         variant === "new" && "bg-[#00ff66] text-black",
         variant === "default" && "bg-black",
-        className
+        className,
       )}
       {...props}
     />

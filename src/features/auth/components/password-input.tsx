@@ -1,8 +1,7 @@
 import { forwardRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
-import { cn } from "@/lib/utils";
-
+import { cn } from "@/utils/utility-functions";
 type PasswordInputProps = React.ComponentProps<typeof Input>;
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(function PasswordInput({ className, ...props }, ref) {
@@ -15,7 +14,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(fu
         type={showPassword ? "text" : "password"}
         className={cn(
           "flex-1 border-0 rounded-none shadow-none focus-visible:ring-0 placeholder:text-muted-foreground focus:placeholder:text-transparent",
-          className
+          className,
         )}
         {...props}
       />

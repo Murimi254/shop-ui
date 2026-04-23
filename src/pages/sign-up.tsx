@@ -1,37 +1,29 @@
-import React, { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/store/hooks";
 import { loginSuccess } from "@/store/slices/authSlice";
-import heroImage from "/public/images/hero.png";
-
-function AuthLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-140px)]">
-      {/* Side image */}
-      <div className="hidden lg:block relative overflow-hidden">
-        <img src={heroImage} alt="Shopping cart with goods" className="w-full h-full object-cover" />
-      </div>
-      {/* Form area */}
-      <div className="flex items-center justify-center p-8 lg:p-16">
-        <div className="w-full max-w-sm">{children}</div>
-      </div>
-    </div>
-  );
-}
+import { Link } from "@tanstack/react-router";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export function SignUpPage() {
   const dispatch = useAppDispatch();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [field]: e.target.value }));
+
+  const showPasswordHandler = function () {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: POST /api/auth/register → dispatch loginSuccess
     const [firstName, ...rest] = form.name.split(" ");
+    console.log(form);
     dispatch(
       loginSuccess({
         id: "new-user",
@@ -60,14 +52,15 @@ export function SignUpPage() {
           onChange={handleChange("email")}
           className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
         />
-        <div>
+        <div className="flex justify-between border-0 border-b border-gray-300">
           <Input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={form.password}
             onChange={handleChange("password")}
-            className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+            className="border-0  rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
           />
+          {showPassword ? <Eye onClick={showPasswordHandler} color="#787F8A" /> : <EyeOff onClick={showPasswordHandler} color="#787F8A" />}
         </div>
 
         <Button type="submit" className="w-full" size="lg">
@@ -100,66 +93,6 @@ export function SignUpPage() {
           Already have account?{" "}
           <Link to="/login" className="font-medium underline text-black hover:text-[#db4444]">
             Log in
-          </Link>
-        </p>
-      </form>
-    </AuthLayout>
-  );
-}
-
-export function LoginPage() {
-  const dispatch = useAppDispatch();
-  const [form, setForm] = useState({ email: "", password: "" });
-
-  const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [field]: e.target.value }));
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: POST /api/auth/login → dispatch loginSuccess with real user
-    dispatch(
-      loginSuccess({
-        id: "demo-user",
-        firstName: "Md",
-        lastName: "Rimel",
-        email: form.email || "rimel1111@gmail.com",
-      }),
-    );
-  };
-
-  return (
-    <AuthLayout>
-      <h2 className="text-3xl font-medium mb-2">Log in to Exclusive</h2>
-      <p className="text-sm text-gray-500 mb-8">Enter your details below</p>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <Input
-          placeholder="Email or Phone Number"
-          value={form.email}
-          onChange={handleChange("email")}
-          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange("password")}
-          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
-        />
-
-        <div className="flex items-center justify-between">
-          <Button type="submit" size="lg">
-            Log In
-          </Button>
-          <button type="button" className="text-sm text-[#db4444] hover:underline">
-            Forgot Password?
-          </button>
-        </div>
-
-        <p className="text-center text-sm text-gray-500">
-          Don't have account?{" "}
-          <Link to="/sign-up" className="font-medium underline text-black hover:text-[#db4444]">
-            Sign Up
           </Link>
         </p>
       </form>
