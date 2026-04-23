@@ -154,3 +154,13 @@ svg {
     @apply bg-background text-foreground;
   }
 }
+
+/* Brand colours as plain CSS vars for easy use */
+:root {
+  --brand-red: #db4444;
+  --brand-black: #000000;
+  --brand-dark: #1d2025;
+  --brand-gray: #f5f5f5;
+  --brand-text: #333333;
+  --brand-muted: #7d8184;
+}
