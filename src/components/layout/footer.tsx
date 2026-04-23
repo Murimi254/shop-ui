@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import QRcode from "@/assets/images/qrcode.png";
 import GooglePlayImage from "@/assets/images/get-it-google-play.png";
 import ApplePlayImage from "@/assets/images/get-it-apple-store.png";
+import { useState } from "react";
+import { z } from "zod";
 const SOCIAL_ICONS = [
   { icon: Facebook, link: "https://www.facebook.com/dennis.soulster.7" },
   { icon: Twitter, link: "https://x.com/solovoi254" },
@@ -12,6 +14,13 @@ const SOCIAL_ICONS = [
 ];
 
 export function Footer() {
+  const [marketingEmail, setMarketingEmail] = useState("");
+  function sendMarketingEmailHandler() {
+    const email = z.email().parse(marketingEmail);
+    console.log(email);
+    setMarketingEmail("");
+    //TODO send it to the backend and send a marketing email
+  }
   return (
     <footer className="bg-black text-white mt-20">
       <div className="max-w-[1200px] mx-auto px-4 py-16">
@@ -23,10 +32,12 @@ export function Footer() {
             <p className="text-sm text-gray-300 mb-4">Get 10% off your first order</p>
             <div className="flex items-center border border-gray-500 rounded overflow-hidden">
               <Input
+                onChange={e => setMarketingEmail(e.target.value)}
+                value={marketingEmail}
                 placeholder="Enter your email"
                 className="bg-transparent border-none text-white placeholder:text-gray-500 text-sm focus-visible:ring-0 rounded-none"
               />
-              <button className="px-3 shrink-0">
+              <button onClick={sendMarketingEmailHandler} className="px-3 shrink-0">
                 <Send size={18} className="text-white" />
               </button>
             </div>
