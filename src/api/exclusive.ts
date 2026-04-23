@@ -4,6 +4,7 @@ import type { LoginCredentialsData, LoginResponseData, TokensData } from "@/type
 import { LoginCredentialsSchema, LoginResponseSchema, TokensSchema } from "@/types/zod-schemas";
 import { tokenStorage } from "@/utils/token-storage";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { ZodError } from "zod";
 const exclusiveApiSlice = createApi({
   reducerPath: "exclusiveApi",
   baseQuery: fetchBaseQuery({
@@ -23,8 +24,9 @@ const exclusiveApiSlice = createApi({
         try {
           const { data } = await queryFulfilled;
           const validatedData = LoginResponseSchema.parse(data);
-          dispatch(setCredentials(validatedData));
-          tokenStorage.setRefreshToken(validatedData.refreshToken);
+          const { refreshToken, ...credentials } = validatedData;
+          dispatch(setCredentials(credentials));
+          tokenStorage.setRefreshToken(refreshToken);
         } catch {
           // queryFulfilled rejection is handled by RTK Query automatically
         }
@@ -67,15 +69,31 @@ const exclusiveApiSlice = createApi({
       },
     }),
 
-    initializeAuth: builder.query<void, void>({
-      query: () => "/auth/me",
+    initializeAuth: builder.query<LoginResponseData, void>({
+      query: () => {
+        const refreshToken = tokenStorage.getRefreshToken();
+        return {
+          url: "/restore-session",
+          method: "GET",
+          headers: refreshToken
+            ? {
+                // send refresh token directly since access token isn't in store yet
+                Authorization: `Bearer ${refreshToken}`,
+              }
+            : undefined,
+        };
+      },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const validated = LoginResponseSchema.parse(data);
-          dispatch(setCredentials(validated));
-        } catch {
-          // No valid session — that's fine, just mark as initialized
+          const validCredentials = LoginResponseSchema.parse(data);
+          dispatch(setCredentials(validCredentials));
+        } catch (error) {
+          if (error instanceof ZodError) {
+            // Server response shape changed
+            console.error("[initializeAuth] Response validation failed:", error.issues);
+          }
+          //swallow the 401 silently
         } finally {
           dispatch(setInitialized());
         }
@@ -89,5 +107,5 @@ const exclusiveApiSlice = createApi({
   }),
 });
 
-export const { useGetProductsQuery } = exclusiveApiSlice;
+export const { useGetProductsQuery, useLoginMutation } = exclusiveApiSlice;
 export default exclusiveApiSlice;

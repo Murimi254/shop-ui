@@ -1,19 +1,19 @@
 import type { AuthStatusData, LoginResponseData, UserData } from "@/types/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export interface InitialState {
+type InitialState = {
   user: UserData | null;
   accessToken: string | null;
-  refreshToken: string | null;
   status: AuthStatusData;
   error: string | null;
   isInitialized: boolean;
-}
+};
+
+type Credentials = Omit<LoginResponseData, "refreshToken">;
 
 const initialState: InitialState = {
   user: null,
   accessToken: null,
-  refreshToken: null,
   status: "idle",
   error: null,
   isInitialized: false,
@@ -24,10 +24,9 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     // Called by RTK Query's onQueryStarted after a successful login
-    setCredentials(state, action: PayloadAction<LoginResponseData>) {
+    setCredentials(state, action: PayloadAction<Credentials>) {
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
       state.status = "authenticated";
       state.error = null;
     },
