@@ -1,6 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Twitter, Instagram, Linkedin, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import QRcode from "@/assets/images/qrcode.png";
+import GooglePlayImage from "@/assets/images/get-it-google-play.png";
+import ApplePlayImage from "@/assets/images/get-it-apple-store.png";
+const SOCIAL_ICONS = [
+  { icon: Facebook, link: "https://www.facebook.com/dennis.soulster.7" },
+  { icon: Twitter, link: "https://x.com/solovoi254" },
+  { icon: Instagram, link: "https://www.instagram.com/solov_oi/" },
+  { icon: Linkedin, link: "https://www.linkedin.com/in/dennis-murimi-7886b91b3/" },
+];
 
 export function Footer() {
   return (
@@ -27,10 +36,14 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-6">Support</h4>
             <address className="not-italic text-sm text-gray-300 leading-7">
-              <p>111 Bijoy sarani, Dhaka,</p>
-              <p>DH 1515, Bangladesh.</p>
-              <p className="mt-2">exclusive@gmail.com</p>
-              <p>+88015-88888-9999</p>
+              <p>Moi University,</p>
+              <p>Kesses Eldoret.</p>
+              <a href="mailto:solovoipes@gmail.com" className="mt-2 block">
+                exclusive@gmail.com
+              </a>
+              <a href="tel:+254793842254" className="block">
+                + 254-793-842-254
+              </a>
             </address>
           </div>
 
@@ -98,32 +111,35 @@ export function Footer() {
             <h4 className="font-semibold mb-6">Download App</h4>
             <p className="text-xs text-gray-400 mb-3">Save $3 with App New User Only</p>
             <div className="flex gap-3 mb-4">
-              {/* QR placeholder */}
+              {/* QR CODE */}
               <div className="w-20 h-20 bg-white rounded flex items-center justify-center">
-                <span className="text-black text-[9px] text-center font-mono">QR CODE</span>
+                <img src={QRcode} alt="Download QR code" />
               </div>
               <div className="flex flex-col gap-2">
-                <a href="#" className="block bg-black border border-gray-600 rounded px-3 py-1.5 text-xs hover:border-gray-400 transition-colors">
-                  <span className="text-gray-400 text-[9px] block">GET IT ON</span>
-                  <span className="font-semibold">Google Play</span>
+                <a
+                  href="https://play.google.com/store/games?hl=en"
+                  className="block bg-black px-3 py-1.5 text-xs hover:border-gray-400 transition-colors"
+                >
+                  <img src={GooglePlayImage} alt="Google Play Logo" />
                 </a>
-                <a href="#" className="block bg-black border border-gray-600 rounded px-3 py-1.5 text-xs hover:border-gray-400 transition-colors">
-                  <span className="text-gray-400 text-[9px] block">Download on the</span>
-                  <span className="font-semibold">App Store</span>
+                <a href="https://www.apple.com/app-store/" className="block bg-black  px-3 py-1.5 text-xs hover:border-gray-400 transition-colors">
+                  <img src={ApplePlayImage} alt="Apple Play Logo" />
                 </a>
               </div>
             </div>
             <div className="flex gap-4">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="text-white hover:text-[#db4444] transition-colors">
-                  <Icon size={20} />
+              {SOCIAL_ICONS.map(i => (
+                <a key={i.link} href={i.link} className="text-white hover:text-[#db4444] transition-colors">
+                  <i.icon size={20} />
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">© Copyright Rimel 2022. All right reserved</div>
+        <div className="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">
+          © Copyright Moi University {new Date().getFullYear()}. All right reserved
+        </div>
       </div>
     </footer>
   );
