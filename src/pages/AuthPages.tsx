@@ -1,0 +1,168 @@
+import React, { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAppDispatch } from "@/store/hooks";
+import { loginSuccess } from "@/store/slices/authSlice";
+import heroImage from "/public/images/hero.png";
+
+function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-140px)]">
+      {/* Side image */}
+      <div className="hidden lg:block relative overflow-hidden">
+        <img src={heroImage} alt="Shopping cart with goods" className="w-full h-full object-cover" />
+      </div>
+      {/* Form area */}
+      <div className="flex items-center justify-center p-8 lg:p-16">
+        <div className="w-full max-w-sm">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export function SignUpPage() {
+  const dispatch = useAppDispatch();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+
+  const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm(prev => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: POST /api/auth/register → dispatch loginSuccess
+    const [firstName, ...rest] = form.name.split(" ");
+    dispatch(
+      loginSuccess({
+        id: "new-user",
+        firstName: firstName ?? "User",
+        lastName: rest.join(" ") ?? "",
+        email: form.email,
+      }),
+    );
+  };
+
+  return (
+    <AuthLayout>
+      <h2 className="text-3xl font-medium mb-2">Create an account</h2>
+      <p className="text-sm text-gray-500 mb-8">Enter your details below</p>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Input
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange("name")}
+          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+        />
+        <Input
+          placeholder="Email or Phone Number"
+          value={form.email}
+          onChange={handleChange("email")}
+          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+        />
+        <div>
+          <Input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange("password")}
+            className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+          />
+        </div>
+
+        <Button type="submit" className="w-full" size="lg">
+          Create Account
+        </Button>
+
+        <Button type="button" variant="outline" className="w-full" size="lg">
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            />
+          </svg>
+          Sign up with Google
+        </Button>
+
+        <p className="text-center text-sm text-gray-500">
+          Already have account?{" "}
+          <Link to="/login" className="font-medium underline text-black hover:text-[#db4444]">
+            Log in
+          </Link>
+        </p>
+      </form>
+    </AuthLayout>
+  );
+}
+
+export function LoginPage() {
+  const dispatch = useAppDispatch();
+  const [form, setForm] = useState({ email: "", password: "" });
+
+  const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm(prev => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: POST /api/auth/login → dispatch loginSuccess with real user
+    dispatch(
+      loginSuccess({
+        id: "demo-user",
+        firstName: "Md",
+        lastName: "Rimel",
+        email: form.email || "rimel1111@gmail.com",
+      }),
+    );
+  };
+
+  return (
+    <AuthLayout>
+      <h2 className="text-3xl font-medium mb-2">Log in to Exclusive</h2>
+      <p className="text-sm text-gray-500 mb-8">Enter your details below</p>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Input
+          placeholder="Email or Phone Number"
+          value={form.email}
+          onChange={handleChange("email")}
+          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange("password")}
+          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+        />
+
+        <div className="flex items-center justify-between">
+          <Button type="submit" size="lg">
+            Log In
+          </Button>
+          <button type="button" className="text-sm text-[#db4444] hover:underline">
+            Forgot Password?
+          </button>
+        </div>
+
+        <p className="text-center text-sm text-gray-500">
+          Don't have account?{" "}
+          <Link to="/sign-up" className="font-medium underline text-black hover:text-[#db4444]">
+            Sign Up
+          </Link>
+        </p>
+      </form>
+    </AuthLayout>
+  );
+}

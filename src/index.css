@@ -8,6 +8,10 @@
   font-family: poppins, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Remove the autofill background colors */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
