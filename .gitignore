@@ -9,6 +9,9 @@ lerna-debug.log*
 package-lock.json
 routeTree.gen.ts
 
+# New folder with all my boilerplate code
+New Folder
+
 node_modules
 dist
 dist-ssr
