@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authSlice } from "./slices/auth";
+import { authSlice } from "./slices/authSlice";
 import exclusiveApiSlice from "@/api/exclusive";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import cartReducer from "./slices/cartSlice";

@@ -17,16 +17,14 @@ const NAV_LINKS = [
 export function Header() {
   const cartCount = useAppSelector(state => selectCartCount({ cart: state.cart }));
   const wishlistCount = useAppSelector(selectWishlistCount);
-  const isAuthenticated = useAppSelector(state => {
-    const authStatus = state.auth.status;
-    if (authStatus === "authenticated") {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
   const [searchValue, setSearchValue] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  function searchHandler() {
+    //send it to backend and get results
+    console.log("Your search query is", searchValue);
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -59,7 +57,7 @@ export function Header() {
               onChange={e => setSearchValue(e.target.value)}
               className="w-60 pr-10 bg-[#f5f5f5] border-none rounded text-sm"
             />
-            <Search size={18} className="absolute right-3 text-gray-500 pointer-events-none" />
+            <Search onClick={searchHandler} size={18} className="absolute right-3 text-gray-500 cursor-pointer" />
           </div>
 
           {/* Wishlist */}

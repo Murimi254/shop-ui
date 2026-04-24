@@ -1,14 +1,13 @@
 import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppDispatch } from "@/hooks/hooks";
-import { loginSuccess } from "@/store/slices/authSlice";
+// import { useAppDispatch } from "@/hooks/hooks";
 import { Link } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export function LoginPage() {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -21,15 +20,6 @@ export function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: POST /api/auth/login → dispatch loginSuccess with real user
-    dispatch(
-      loginSuccess({
-        id: "demo-user",
-        firstName: "Md",
-        lastName: "Rimel",
-        email: form.email || "rimel1111@gmail.com",
-      }),
-    );
   };
 
   return (

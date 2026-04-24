@@ -1,4 +1,4 @@
-import { clearCredentials, setAccessToken, setCredentials, setInitialized } from "@/store/slices/auth";
+import { clearCredentials, setAccessToken, setCredentials, setInitialized } from "@/store/slices/authSlice";
 import type { RootState } from "@/store/store";
 import type { LoginCredentialsData, LoginResponseData, TokensData } from "@/types/types";
 import { LoginCredentialsSchema, LoginResponseSchema, TokensSchema } from "@/types/zod-schemas";

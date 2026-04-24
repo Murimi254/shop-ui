@@ -1,71 +1,60 @@
+import type { LoginResponseData, UserData } from "@/types/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  address?: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+type InitialState = {
+  user: UserData | null;
+  accessToken: string | null;
   error: string | null;
-}
-
-const initialState: AuthState = {
-  // Seed a demo user so account page renders properly out of the box
-  user: {
-    id: "demo-user",
-    firstName: "DMN",
-    lastName: "Dennis",
-    email: "dennis@gmail.com",
-    address: "Moi University",
-  },
-  isAuthenticated: true,
-  isLoading: false,
-  error: null,
+  isInitialized: boolean;
+  isAuthenticated: boolean;
 };
 
-const authSlice = createSlice({
+type Credentials = Omit<LoginResponseData, "refreshToken">;
+
+const initialState: InitialState = {
+  user: null,
+  accessToken: null,
+  isAuthenticated: false,
+  error: null,
+  isInitialized: false,
+};
+
+export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // TODO: replace these with createAsyncThunk calls wired to your backend
-    loginStart(state) {
-      state.isLoading = true;
-      state.error = null;
-    },
-    loginSuccess(state, action: PayloadAction<User>) {
-      state.user = action.payload;
+    // Called by RTK Query's onQueryStarted after a successful login
+    setCredentials(state, action: PayloadAction<Credentials>) {
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-      state.isLoading = false;
       state.error = null;
     },
-    loginFailure(state, action: PayloadAction<string>) {
-      state.isLoading = false;
+
+    clearCredentials(state) {
+      state.user = null;
+      state.accessToken = null;
+      state.isAuthenticated = false;
+      state.error = null;
+    },
+
+    // Called after token refresh — only the access token changes
+    setAccessToken(state, action: PayloadAction<string>) {
+      state.accessToken = action.payload;
+    },
+
+    setError(state, action: PayloadAction<string>) {
       state.error = action.payload;
     },
-    logout(state) {
-      state.user = null;
-      state.isAuthenticated = false;
+
+    clearError(state) {
+      state.error = null;
     },
-    updateProfile(state, action: PayloadAction<Partial<User>>) {
-      if (state.user) {
-        state.user = { ...state.user, ...action.payload };
-      }
+
+    setInitialized(state) {
+      state.isInitialized = true;
     },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, updateProfile } = authSlice.actions;
-
-export default authSlice.reducer;
-
-export const selectUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectIsAuthenticated = (state: { auth: AuthState }) => {
-  const isAuthenticated = state.auth.isAuthenticated;
-  return isAuthenticated;
-};
+export const { clearCredentials, clearError, setAccessToken, setCredentials, setError, setInitialized } = authSlice.actions;
