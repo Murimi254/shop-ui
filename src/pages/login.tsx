@@ -1,7 +1,7 @@
 import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch } from "@/hooks/hooks";
 import { loginSuccess } from "@/store/slices/authSlice";
 import { Link } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";

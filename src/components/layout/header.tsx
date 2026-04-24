@@ -1,12 +1,11 @@
-import { Link } from "@tanstack/react-router";
-import { Search, Heart, ShoppingCart, User, Menu } from "lucide-react";
-import { selectWishlistCount } from "@/store/slices/wishlistSlice";
-import { selectIsAuthenticated } from "@/store/slices/authSlice";
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils/utility-functions";
+import { useAppSelector } from "@/hooks/hooks";
 import { selectCartCount } from "@/store/slices/cartSlice";
-import { useAppSelector } from "@/store/hooks";
+import { selectWishlistCount } from "@/store/slices/wishlistSlice";
+import { cn } from "@/utils/utility-functions";
+import { Link } from "@tanstack/react-router";
+import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
+import { useState } from "react";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
@@ -18,7 +17,14 @@ const NAV_LINKS = [
 export function Header() {
   const cartCount = useAppSelector(state => selectCartCount({ cart: state.cart }));
   const wishlistCount = useAppSelector(selectWishlistCount);
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const isAuthenticated = useAppSelector(state => {
+    const authStatus = state.auth.status;
+    if (authStatus === "authenticated") {
+      return true;
+    } else {
+      return false;
+    }
+  });
   const [searchValue, setSearchValue] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

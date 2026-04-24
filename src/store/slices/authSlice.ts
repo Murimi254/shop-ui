@@ -19,10 +19,10 @@ const initialState: AuthState = {
   // Seed a demo user so account page renders properly out of the box
   user: {
     id: "demo-user",
-    firstName: "Md",
-    lastName: "Rimel",
-    email: "rimel1111@gmail.com",
-    address: "Kingston, 5236, United State",
+    firstName: "DMN",
+    lastName: "Dennis",
+    email: "dennis@gmail.com",
+    address: "Moi University",
   },
   isAuthenticated: true,
   isLoading: false,
@@ -60,11 +60,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, updateProfile } =
-  authSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, updateProfile } = authSlice.actions;
 
 export default authSlice.reducer;
 
 export const selectUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectIsAuthenticated = (state: { auth: AuthState }) =>
-  state.auth.isAuthenticated;
+export const selectIsAuthenticated = (state: { auth: AuthState }) => {
+  const isAuthenticated = state.auth.isAuthenticated;
+  return isAuthenticated;
+};

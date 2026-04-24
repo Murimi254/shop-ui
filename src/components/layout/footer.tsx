@@ -6,6 +6,7 @@ import GooglePlayImage from "@/assets/images/get-it-google-play.png";
 import ApplePlayImage from "@/assets/images/get-it-apple-store.png";
 import { useState } from "react";
 import { z } from "zod";
+import { useSendMarketingEmailMutation } from "@/api/exclusive";
 const SOCIAL_ICONS = [
   { icon: Facebook, link: "https://www.facebook.com/dennis.soulster.7" },
   { icon: Twitter, link: "https://x.com/solovoi254" },
@@ -15,11 +16,13 @@ const SOCIAL_ICONS = [
 
 export function Footer() {
   const [marketingEmail, setMarketingEmail] = useState("");
+  const [sendMarketingEmail] = useSendMarketingEmailMutation();
   function sendMarketingEmailHandler() {
     const email = z.email().parse(marketingEmail);
     console.log(email);
     setMarketingEmail("");
     //TODO send it to the backend and send a marketing email
+    sendMarketingEmail(marketingEmail);
   }
   return (
     <footer className="bg-black text-white mt-20">

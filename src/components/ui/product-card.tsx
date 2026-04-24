@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
 import { formatPrice, cn } from "@/utils/utility-functions";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
 import { addToCart } from "@/store/slices/cartSlice";
 import type { Product } from "@/data/products";

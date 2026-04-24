@@ -104,8 +104,12 @@ const exclusiveApiSlice = createApi({
       query: () => ({ url: "/products", method: "GET" }), //NOTE You can either return a string(urlOnly) or an object
       providesTags: ["Products"],
     }),
+
+    sendMarketingEmail: builder.mutation<void, string>({
+      query: (email: string) => ({ url: "/send-marketing-email", method: "POST", body: { email } }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useLoginMutation } = exclusiveApiSlice;
+export const { useGetProductsQuery, useLoginMutation, useSendMarketingEmailMutation } = exclusiveApiSlice;
 export default exclusiveApiSlice;
