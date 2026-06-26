@@ -4,9 +4,9 @@ import { X, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectCartItems, selectCartSubtotal, removeFromCart, updateQuantity, applyCoupon } from "@/store/slices/cartSlice";
 import { formatPrice } from "@/utils/utility-functions";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 
 export function CartPage() {
   const dispatch = useAppDispatch();

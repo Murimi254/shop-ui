@@ -3,17 +3,17 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/ui/star-rating";
 import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/utils";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { selectWishlistItems, removeFromWishlist } from "@/store/slices/wishlistSlice";
 import { addToCart } from "@/store/slices/cartSlice";
+import { formatPrice } from "@/utils/utility-functions";
 
 export function WishlistPage() {
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectWishlistItems);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-10">
+    <div className="max-w-300 mx-auto px-4 py-10">
       {/* Header row */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-base font-medium">
@@ -22,7 +22,7 @@ export function WishlistPage() {
         <Button
           variant="outline"
           onClick={() =>
-            items.forEach((item) =>
+            items.forEach(item =>
               dispatch(
                 addToCart({
                   id: item.id,
@@ -30,8 +30,8 @@ export function WishlistPage() {
                   price: item.price,
                   image: item.image,
                   quantity: 1,
-                })
-              )
+                }),
+              ),
             )
           }
           disabled={items.length === 0}
@@ -49,7 +49,7 @@ export function WishlistPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {items.map((product) => (
+          {items.map(product => (
             <div key={product.id} className="group relative">
               {/* Image */}
               <div className="relative bg-[#f5f5f5] rounded overflow-hidden mb-3 aspect-square">
@@ -64,11 +64,7 @@ export function WishlistPage() {
                 >
                   <X size={14} />
                 </button>
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-contain p-4"
-                />
+                <img src={product.image} alt={product.name} className="w-full h-full object-contain p-4" />
                 {/* Add to cart overlay */}
                 <button
                   onClick={() =>
@@ -79,7 +75,7 @@ export function WishlistPage() {
                         price: product.price,
                         image: product.image,
                         quantity: 1,
-                      })
+                      }),
                     )
                   }
                   className="absolute bottom-0 left-0 right-0 bg-black text-white text-center py-2 text-sm font-medium translate-y-full group-hover:translate-y-0 transition-transform"
@@ -91,14 +87,8 @@ export function WishlistPage() {
               {/* Info */}
               <h3 className="font-medium text-sm mb-1 truncate">{product.name}</h3>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[#db4444] font-semibold text-sm">
-                  {formatPrice(product.price)}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-gray-400 text-sm line-through">
-                    {formatPrice(product.originalPrice)}
-                  </span>
-                )}
+                <span className="text-[#db4444] font-semibold text-sm">{formatPrice(product.price)}</span>
+                {product.originalPrice && <span className="text-gray-400 text-sm line-through">{formatPrice(product.originalPrice)}</span>}
               </div>
               <StarRating rating={product.rating} reviews={product.reviews} />
             </div>

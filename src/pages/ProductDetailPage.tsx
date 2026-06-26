@@ -6,7 +6,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { SectionLabel } from "@/components/ui/section-label";
 import { ProductCard } from "@/components/ui/product-card";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addToCart } from "@/store/slices/cartSlice";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
 import { PRODUCT_DETAIL, FLASH_SALE_PRODUCTS } from "@/data/products";
@@ -45,7 +45,7 @@ export function ProductDetailPage() {
   const thumbnails = product.images ?? [product.image];
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8">
+    <div className="max-w-300 mx-auto px-4 py-8">
       <Breadcrumb items={[{ label: "Account", to: "/account" }, { label: "Gaming", to: "/" }, { label: product.name }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
@@ -58,7 +58,7 @@ export function ProductDetailPage() {
                 key={i}
                 onClick={() => setSelectedImage(i)}
                 className={cn(
-                  "w-[110px] h-[110px] bg-[#f5f5f5] rounded flex items-center justify-center border-2 transition-colors",
+                  "w-27.5 bg-[#f5f5f5] rounded flex items-center justify-center border-2 transition-colors",
                   selectedImage === i ? "border-[#db4444]" : "border-transparent",
                 )}
               >
@@ -68,8 +68,8 @@ export function ProductDetailPage() {
           </div>
 
           {/* Main image */}
-          <div className="flex-1 bg-[#f5f5f5] rounded flex items-center justify-center min-h-[400px]">
-            <img src={thumbnails[selectedImage] ?? product.image} alt={product.name} className="w-full h-full object-contain max-h-[420px] p-6" />
+          <div className="flex-1 bg-[#f5f5f5] rounded flex items-center justify-center min-h-100">
+            <img src={thumbnails[selectedImage] ?? product.image} alt={product.name} className="w-full h-full object-contain max-h-105 p-6" />
           </div>
         </div>
 
@@ -169,14 +169,14 @@ export function ProductDetailPage() {
           {/* Delivery info */}
           <div className="border border-gray-200 rounded divide-y divide-gray-200">
             <div className="flex items-start gap-4 p-4">
-              <Truck size={36} className="text-black flex-shrink-0 mt-1" />
+              <Truck size={36} className="text-black shrink-0 mt-1" />
               <div>
                 <p className="font-medium text-sm mb-1">Free Delivery</p>
                 <p className="text-xs text-gray-500 underline cursor-pointer">Enter your postal code for Delivery Availability</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-4">
-              <RefreshCw size={36} className="text-black flex-shrink-0 mt-1" />
+              <RefreshCw size={36} className="text-black shrink-0 mt-1" />
               <div>
                 <p className="font-medium text-sm mb-1">Return Delivery</p>
                 <p className="text-xs text-gray-500">

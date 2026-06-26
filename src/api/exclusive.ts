@@ -15,7 +15,7 @@ const exclusiveApiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Products"], //Needs to happen before using them in providesTags and invalidatesTags else TS will yell
+  tagTypes: ["products"], //Needs to happen before using them in providesTags and invalidatesTags else TS will yell
   keepUnusedDataFor: 60,
   endpoints: builder => ({
     login: builder.mutation<LoginResponseData, LoginCredentialsData>({
@@ -102,7 +102,7 @@ const exclusiveApiSlice = createApi({
 
     getProducts: builder.query({
       query: () => ({ url: "/products", method: "GET" }), //NOTE You can either return a string(urlOnly) or an object
-      providesTags: ["Products"],
+      providesTags: ["products"],
     }),
 
     sendMarketingEmail: builder.mutation<void, string>({

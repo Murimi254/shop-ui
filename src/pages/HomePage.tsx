@@ -2,6 +2,7 @@ import Iphone14Image from "@/assets/images/iphone_carousel.png";
 import JBLSpeaker from "@/assets/images/JBL.png";
 import PS5Image from "@/assets/images/ps5-carousel.png";
 import SamsungImage from "@/assets/images/samsung-carousel.png";
+import { useGetProductsQuery } from "@/api/exclusive";
 import { Button } from "@/components/ui/button";
 import { Countdown } from "@/components/ui/countdown";
 import { ProductCard } from "@/components/ui/product-card";
@@ -48,6 +49,8 @@ export function HomePage() {
       }),
     );
   }
+  const { data } = useGetProductsQuery({});
+  console.log(data);
 
   return (
     <div className="max-w-300 mx-auto px-4">

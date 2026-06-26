@@ -1,14 +1,11 @@
 import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppDispatch } from "@/store/hooks";
-import { loginSuccess } from "@/store/slices/authSlice";
 import { Link } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export function SignUpPage() {
-  const dispatch = useAppDispatch();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,14 +21,7 @@ export function SignUpPage() {
     // TODO: POST /api/auth/register → dispatch loginSuccess
     const [firstName, ...rest] = form.name.split(" ");
     console.log(form);
-    dispatch(
-      loginSuccess({
-        id: "new-user",
-        firstName: firstName ?? "User",
-        lastName: rest.join(" ") ?? "",
-        email: form.email,
-      }),
-    );
+    console.log(firstName, rest);
   };
 
   return (
