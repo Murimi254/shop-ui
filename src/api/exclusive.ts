@@ -1,4 +1,4 @@
-import { clearCredentials, setAccessToken, setCredentials, setInitialized } from "@/store/slices/authSlice";
+import { logout, setAccessToken, login, setInitialized } from "@/store/slices/authSlice";
 import type { RootState } from "@/store/store";
 import type { LoginCredentialsData, LoginResponseData, TokensData } from "@/types/types";
 import { LoginCredentialsSchema, LoginResponseSchema, TokensSchema } from "@/types/zod-schemas";
@@ -25,7 +25,7 @@ const exclusiveApiSlice = createApi({
           const { data } = await queryFulfilled;
           const validatedData = LoginResponseSchema.parse(data);
           const { refreshToken, ...credentials } = validatedData;
-          dispatch(setCredentials(credentials));
+          dispatch(login(credentials));
           tokenStorage.setRefreshToken(refreshToken);
         } catch {
           // queryFulfilled rejection is handled by RTK Query automatically
@@ -40,7 +40,7 @@ const exclusiveApiSlice = createApi({
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         // Clear locally immediately — don't wait for server
-        dispatch(clearCredentials());
+        dispatch(logout());
         tokenStorage.clearRefreshToken();
 
         try {
@@ -63,7 +63,7 @@ const exclusiveApiSlice = createApi({
           tokenStorage.setRefreshToken(validatedTokens.refreshToken);
           dispatch(setAccessToken(validatedTokens.accessToken));
         } catch {
-          dispatch(clearCredentials());
+          dispatch(logout());
           tokenStorage.clearRefreshToken();
         }
       },
@@ -87,7 +87,7 @@ const exclusiveApiSlice = createApi({
         try {
           const { data } = await queryFulfilled;
           const validCredentials = LoginResponseSchema.parse(data);
-          dispatch(setCredentials(validCredentials));
+          dispatch(login(validCredentials));
         } catch (error) {
           if (error instanceof ZodError) {
             // Server response shape changed

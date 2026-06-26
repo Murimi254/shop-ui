@@ -24,14 +24,14 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     // Called by RTK Query's onQueryStarted after a successful login
-    setCredentials(state, action: PayloadAction<Credentials>) {
+    login(state, action: PayloadAction<Credentials>) {
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
       state.error = null;
     },
 
-    clearCredentials(state) {
+    logout(state) {
       state.user = null;
       state.accessToken = null;
       state.isAuthenticated = false;
@@ -57,4 +57,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const { clearCredentials, clearError, setAccessToken, setCredentials, setError, setInitialized } = authSlice.actions;
+export const { logout, clearError, setAccessToken, login, setError, setInitialized } = authSlice.actions;

@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number): string {
-  return `$${amount.toLocaleString()}`;
+  return `KSh ${amount.toLocaleString()}`;
 }
 
 export function calculateDiscount(original: number, sale: number): number {

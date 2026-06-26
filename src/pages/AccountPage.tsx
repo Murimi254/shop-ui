@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectUser, updateProfile, logout } from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { logout } from "@/store/slices/authSlice";
 import { cn } from "@/utils/utility-functions";
+import React, { useState } from "react";
 type Section = "profile" | "address" | "payment" | "returns" | "cancellations" | "wishlist";
 
 export function AccountPage() {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
+  const user = useAppSelector(state => state.auth.user);
   const [activeSection, setActiveSection] = useState<Section>("profile");
 
   const [form, setForm] = useState({
-    firstName: user?.firstName ?? "",
-    lastName: user?.lastName ?? "",
+    firstName: user?.fullName.split(" ")[0] ?? "",
+    lastName: user?.fullName.split(" ")[1] ?? "",
     email: user?.email ?? "",
-    address: user?.address ?? "",
+    address: user?.fullName ?? "", //TODO PASS THE ADDRESS FROM THE BACKEND
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -26,14 +26,14 @@ export function AccountPage() {
     setForm(prev => ({ ...prev, [field]: e.target.value }));
 
   const handleSave = () => {
-    dispatch(
-      updateProfile({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        address: form.address,
-      }),
-    );
+    // dispatch(
+    //   updateProfile({
+    //     firstName: form.firstName,
+    //     lastName: form.lastName,
+    //     email: form.email,
+    //     address: form.address,
+    //   }),
+    // );
     // TODO: PATCH /api/user/profile
   };
 
@@ -60,13 +60,13 @@ export function AccountPage() {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8">
+    <div className="max-w-300 mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-4">
         <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "My Account" }]} />
         <p className="text-sm">
           Welcome!{" "}
           <span className="text-[#db4444] font-medium">
-            {user?.firstName} {user?.lastName}
+            {user?.fullName.split(" ")[0]} {user?.fullName.split(" ")[1]}
           </span>
         </p>
       </div>

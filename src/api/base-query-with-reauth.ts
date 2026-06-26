@@ -1,5 +1,5 @@
 // store/api/baseQueryWithReauth.ts
-import { clearCredentials, setAccessToken } from "@/store/slices/authSlice";
+import { logout, setAccessToken } from "@/store/slices/authSlice";
 import type { RootState } from "@/store/store";
 import { tokenStorage } from "@/utils/token-storage";
 import { fetchBaseQuery, type BaseQueryFn, type FetchArgs, type FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
@@ -89,7 +89,7 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
     // Refresh failed — session is dead
     // Release the queue with null so waiting requests know it failed
     processQueue(null);
-    api.dispatch(clearCredentials());
+    api.dispatch(logout());
     tokenStorage.clearRefreshToken();
 
     // Return the original 401 to the component
