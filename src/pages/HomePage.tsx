@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Countdown } from "@/components/ui/countdown";
 import { ProductCard } from "@/components/ui/product-card";
 import { SectionLabel } from "@/components/ui/section-label";
-import { BEST_SELLING_PRODUCTS, CATEGORIES, EXPLORE_PRODUCTS, FLASH_SALE_PRODUCTS, SIDEBAR_CATEGORIES } from "@/data/products";
+import { CATEGORIES, SIDEBAR_CATEGORIES } from "@/data/products";
 import { useAppDispatch } from "@/hooks/hooks";
 import { addToCart } from "@/store/slices/cartSlice";
 import { Camera, ChevronLeft, ChevronRight, Gamepad2, Headphones, Headset, Monitor, ShieldCheck, Smartphone, Truck, Watch } from "lucide-react";
@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import WomanWearingHat from "@/assets/images/woman-wearing-hat.png";
 import GucciPerfume from "@/assets/images/gucci-perfume.png";
 import AmazonSpeaker from "@/assets/images/amazon-speakers.png";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   smartphone: Smartphone,
@@ -34,6 +35,7 @@ const HERO_SLIDES = [
 const flashSaleEnd = new Date(Date.now() + 3 * 3600 * 1000 + 23 * 60 * 1000 + 19 * 1000);
 
 export function HomePage() {
+  const { data, isLoading, isError } = useGetProductsQuery({ limit: 30 });
   const [heroSlide, setHeroSlide] = useState(0);
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(3); // Camera active in wireframe
   const dispatch = useAppDispatch();
@@ -49,8 +51,18 @@ export function HomePage() {
       }),
     );
   }
-  const { data } = useGetProductsQuery({});
-  console.log(data);
+
+  const FLASH_SALE_PRODUCTS = data?.sections.flashSale;
+  const BEST_SELLING_PRODUCTS = data?.sections.bestSelling;
+  const EXPLORE_PRODUCTS = data?.products;
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (isError) {
+    return <h1>OOPS SORRY GUYS</h1>;
+  }
 
   return (
     <div className="max-w-300 mx-auto px-4">
@@ -135,7 +147,7 @@ export function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {FLASH_SALE_PRODUCTS.map(p => (
+          {FLASH_SALE_PRODUCTS?.map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -199,7 +211,7 @@ export function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {BEST_SELLING_PRODUCTS.map(p => (
+          {BEST_SELLING_PRODUCTS?.map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -240,7 +252,7 @@ export function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {EXPLORE_PRODUCTS.map(p => (
+          {EXPLORE_PRODUCTS?.map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

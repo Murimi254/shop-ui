@@ -1,10 +1,10 @@
+import api from "@/api/exclusive";
 import { configureStore } from "@reduxjs/toolkit";
-import { authSlice } from "./slices/authSlice";
-import exclusiveApiSlice from "@/api/exclusive";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { authSlice } from "./slices/authSlice";
 import cartReducer from "./slices/cartSlice";
-import wishListReducer from "./slices/wishlistSlice";
 import uiReducer from "./slices/uiSlice";
+import wishListReducer from "./slices/wishlistSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,9 +12,9 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishListReducer,
     ui: uiReducer,
-    [exclusiveApiSlice.reducerPath]: exclusiveApiSlice.reducer,
+    [api.reducerPath]: api.reducer,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(exclusiveApiSlice.middleware),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
 });
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 setupListeners(store.dispatch);

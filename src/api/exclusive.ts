@@ -1,12 +1,13 @@
 import { logout, setAccessToken, login, setInitialized } from "@/store/slices/authSlice";
 import type { RootState } from "@/store/store";
-import type { LoginCredentialsData, LoginResponseData, TokensData } from "@/types/types";
+import type { ApiProductResponse, LoginCredentialsData, LoginResponseData, ProductsViewModel, TokensData } from "@/types/types";
 import { LoginCredentialsSchema, LoginResponseSchema, TokensSchema } from "@/types/zod-schemas";
 import { tokenStorage } from "@/utils/token-storage";
+import { toUiProducts } from "@/utils/utility-functions";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ZodError } from "zod";
-const exclusiveApiSlice = createApi({
-  reducerPath: "exclusiveApi",
+const api = createApi({
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080",
     prepareHeaders: (headers, { getState }) => {
@@ -100,9 +101,20 @@ const exclusiveApiSlice = createApi({
       },
     }),
 
-    getProducts: builder.query({
-      query: () => ({ url: "/products", method: "GET" }), //NOTE You can either return a string(urlOnly) or an object
+    getProducts: builder.query<ProductsViewModel, { limit?: number; search?: string; page?: number }>({
+      query: params => ({ url: "/products", method: "GET", params }), //NOTE You can either return a string(urlOnly) or an object
       providesTags: ["products"],
+      transformResponse: (response: ApiProductResponse): ProductsViewModel => {
+        const products = response.products.map((product, index) => toUiProducts(product, index));
+        return {
+          products,
+          sections: {
+            flashSale: products.filter(product => product.discount).slice(0, 8),
+            bestSelling: products.slice(8, 16),
+            explore: products.slice(16, 26),
+          },
+        };
+      },
     }),
 
     sendMarketingEmail: builder.mutation<void, string>({
@@ -111,5 +123,5 @@ const exclusiveApiSlice = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useLoginMutation, useSendMarketingEmailMutation } = exclusiveApiSlice;
-export default exclusiveApiSlice;
+export const { useGetProductsQuery, useLoginMutation, useSendMarketingEmailMutation } = api;
+export default api;

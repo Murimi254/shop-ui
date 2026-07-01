@@ -17,6 +17,7 @@ export interface Product {
   isNew?: boolean;
 }
 
+
 export interface Category {
   id: string;
   name: string;
