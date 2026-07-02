@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 
-import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { useAppSelector, useAppDispatch } from "@/hooks/hooks";
 import { selectCartItems, selectCartSubtotal, applyCoupon } from "@/store/slices/cartSlice";
-import { formatPrice, cn } from "@/lib/utils";
+import { formatPrice, cn } from "@/utils/utility-functions";
 
 type PaymentMethod = "bank" | "cod";
 

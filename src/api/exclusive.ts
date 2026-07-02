@@ -1,6 +1,6 @@
 import { logout, setAccessToken, login, setInitialized } from "@/store/slices/authSlice";
 import type { RootState } from "@/store/store";
-import type { ApiProductResponse, LoginCredentialsData, LoginResponseData, ProductsViewModel, TokensData } from "@/types/types";
+import type { ApiProduct, ApiProductResponse, LoginCredentialsData, LoginResponseData, ProductsViewModel, TokensData } from "@/types/types";
 import { LoginCredentialsSchema, LoginResponseSchema, TokensSchema } from "@/types/zod-schemas";
 import { tokenStorage } from "@/utils/token-storage";
 import { toUiProducts } from "@/utils/utility-functions";
@@ -117,11 +117,16 @@ const api = createApi({
       },
     }),
 
+    getProduct: builder.query<ApiProduct, string>({
+      query: productId => ({ url: `/product/${productId}`, method: "GET" }),
+      providesTags: (_result, _error, productId) => [{ type: "products", id: productId }],
+    }),
+
     sendMarketingEmail: builder.mutation<void, string>({
       query: (email: string) => ({ url: "/send-marketing-email", method: "POST", body: { email } }),
     }),
   }),
 });
 
-export const { useGetProductsQuery, useLoginMutation, useSendMarketingEmailMutation } = api;
+export const { useGetProductsQuery, useGetProductQuery, useLoginMutation, useSendMarketingEmailMutation } = api;
 export default api;

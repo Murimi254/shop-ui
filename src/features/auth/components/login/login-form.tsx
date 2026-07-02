@@ -45,7 +45,7 @@ export function LoginForm() {
           <Field>
             <p className="text-center">
               Don't have an account?{" "}
-              <Link to="/signup" className="hover:underline decoration-2">
+              <Link to="/sign-up" className="hover:underline decoration-2">
                 Sign up
               </Link>
             </p>

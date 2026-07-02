@@ -1,38 +1,72 @@
 import { useState } from "react";
 
 import { Minus, Plus, Heart, Truck, RefreshCw } from "lucide-react";
+import { useParams } from "@tanstack/react-router";
+import { useGetProductQuery, useGetProductsQuery } from "@/api/exclusive";
 import { Button } from "@/components/ui/button";
-import { StarRating } from "@/components/ui/star-rating";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { SectionLabel } from "@/components/ui/section-label";
 import { ProductCard } from "@/components/ui/product-card";
+import { SectionLabel } from "@/components/ui/section-label";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addToCart } from "@/store/slices/cartSlice";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
-import { PRODUCT_DETAIL, FLASH_SALE_PRODUCTS } from "@/data/products";
-import { cn } from "@/utils/utility-functions";
+import type { Product } from "@/data/products";
+import { cn, formatPrice } from "@/utils/utility-functions";
 export function ProductDetailPage() {
-  // In prod: fetch product by useParams().productId from your API
-  const product = PRODUCT_DETAIL;
+  const { productId } = useParams({ from: "/product/$productId" });
+  const { data: product, isLoading, isError } = useGetProductQuery(productId);
+  const { data: productsData } = useGetProductsQuery({ limit: 30 });
 
   const dispatch = useAppDispatch();
-  const isWishlisted = useAppSelector(selectIsWishlisted(product.id));
+  const isWishlisted = useAppSelector(selectIsWishlisted(productId));
 
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [quantity, setQuantity] = useState(2);
+  const [quantity, setQuantity] = useState(1);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-300 mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="bg-[#f5f5f5] rounded min-h-100 animate-pulse" />
+          <div className="space-y-4">
+            <div className="h-8 w-2/3 bg-gray-100 rounded animate-pulse" />
+            <div className="h-6 w-24 bg-gray-100 rounded animate-pulse" />
+            <div className="h-24 w-full bg-gray-100 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !product) {
+    return (
+      <div className="max-w-300 mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-3">Product not found</h1>
+        <p className="text-gray-500">The product you are looking for is unavailable or may have been removed.</p>
+      </div>
+    );
+  }
+
+  const wishlistProduct: Product = {
+    id: product._id,
+    name: product.name,
+    price: product.price,
+    rating: 0,
+    reviews: 0,
+    image: product.imageUrl,
+    category: product.category,
+    description: product.description,
+    inStock: product.quantity > 0,
+  };
+  const relatedProducts = productsData?.products.filter(item => item.category === product.category && item.id !== product._id).slice(0, 4) ?? [];
 
   const handleAddToCart = () => {
     dispatch(
       addToCart({
-        id: product.id,
+        id: product._id,
         name: product.name,
         price: product.price,
-        image: product.image,
+        image: product.imageUrl,
         quantity,
-        color: product.colors?.[selectedColor],
-        size: selectedSize,
       }),
     );
   };
@@ -42,35 +76,14 @@ export function ProductDetailPage() {
     // TODO: navigate to checkout
   };
 
-  const thumbnails = product.images ?? [product.image];
-
   return (
     <div className="max-w-300 mx-auto px-4 py-8">
-      <Breadcrumb items={[{ label: "Account", to: "/account" }, { label: "Gaming", to: "/" }, { label: product.name }]} />
+      <Breadcrumb items={[{ label: "Products", to: "/" }, { label: product.category, to: "/" }, { label: product.name }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-        {/* ─── Image Gallery ─── */}
-        <div className="flex gap-4">
-          {/* Thumbnails */}
-          <div className="flex flex-col gap-3">
-            {thumbnails.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setSelectedImage(i)}
-                className={cn(
-                  "w-27.5 bg-[#f5f5f5] rounded flex items-center justify-center border-2 transition-colors",
-                  selectedImage === i ? "border-[#db4444]" : "border-transparent",
-                )}
-              >
-                <img src={src} alt="" className="w-20 h-20 object-contain" />
-              </button>
-            ))}
-          </div>
-
-          {/* Main image */}
-          <div className="flex-1 bg-[#f5f5f5] rounded flex items-center justify-center min-h-100">
-            <img src={thumbnails[selectedImage] ?? product.image} alt={product.name} className="w-full h-full object-contain max-h-105 p-6" />
-          </div>
+        {/* Product image */}
+        <div className="bg-[#f5f5f5] rounded flex items-center justify-center min-h-100">
+          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain max-h-105 p-6" />
         </div>
 
         {/* ─── Product Info ─── */}
@@ -78,58 +91,19 @@ export function ProductDetailPage() {
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
           <div className="flex items-center gap-3 mb-3">
-            <StarRating rating={product.rating} reviews={product.reviews} size="md" />
+            <span className="text-sm font-medium text-gray-500 capitalize">{product.category}</span>
             <span className="text-gray-400">|</span>
-            {product.inStock ? (
+            {product.quantity > 0 ? (
               <span className="text-green-500 text-sm font-medium">In Stock</span>
             ) : (
               <span className="text-red-500 text-sm font-medium">Out of Stock</span>
             )}
           </div>
 
-          <p className="text-2xl font-bold mb-4">${product.price.toFixed(2)}</p>
+          <p className="text-2xl font-bold mb-4">{formatPrice(product.price)}</p>
           <p className="text-sm text-gray-600 mb-6 border-b border-gray-200 pb-6">{product.description}</p>
 
-          {/* Colours */}
-          {product.colors && (
-            <div className="flex items-center gap-4 mb-5">
-              <span className="text-sm font-medium w-16">Colours:</span>
-              <div className="flex gap-2">
-                {product.colors.map((color, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedColor(i)}
-                    className={cn(
-                      "w-5 h-5 rounded-full border-2 transition-all",
-                      selectedColor === i ? "border-black scale-110" : "border-transparent",
-                    )}
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Size */}
-          {product.sizes && (
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-sm font-medium w-16">Size:</span>
-              <div className="flex gap-2">
-                {product.sizes.map(size => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={cn(
-                      "w-9 h-9 border rounded text-sm font-medium transition-colors",
-                      selectedSize === size ? "bg-[#db4444] text-white border-[#db4444]" : "border-gray-300 hover:border-[#db4444]",
-                    )}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <p className="text-sm text-gray-500 mb-6">{product.quantity} available</p>
 
           {/* Quantity + Buy */}
           <div className="flex items-center gap-4 mb-6">
@@ -144,19 +118,20 @@ export function ProductDetailPage() {
                 {String(quantity).padStart(2, "0")}
               </span>
               <button
-                onClick={() => setQuantity(q => q + 1)}
+                onClick={() => setQuantity(q => Math.min(product.quantity, q + 1))}
+                disabled={product.quantity === 0 || quantity >= product.quantity}
                 className="w-10 h-11 flex items-center justify-center bg-[#db4444] text-white hover:bg-[#c03535] transition-colors"
               >
                 <Plus size={16} />
               </button>
             </div>
 
-            <Button size="lg" onClick={handleBuyNow} className="flex-1">
+            <Button size="lg" onClick={handleBuyNow} disabled={product.quantity === 0} className="flex-1">
               Buy Now
             </Button>
 
             <button
-              onClick={() => dispatch(toggleWishlist(product))}
+              onClick={() => dispatch(toggleWishlist(wishlistProduct))}
               className={cn(
                 "w-11 h-11 border rounded flex items-center justify-center transition-colors",
                 isWishlisted ? "border-[#db4444] text-[#db4444]" : "border-gray-300 hover:border-[#db4444] hover:text-[#db4444]",
@@ -188,15 +163,16 @@ export function ProductDetailPage() {
         </div>
       </div>
 
-      {/* ─── Related Items ─── */}
-      <section>
-        <SectionLabel tag="Related Item" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {FLASH_SALE_PRODUCTS.slice(0, 4).map(p => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
+      {relatedProducts.length > 0 && (
+        <section>
+          <SectionLabel tag="Related Item" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {relatedProducts.map(relatedProduct => (
+              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
