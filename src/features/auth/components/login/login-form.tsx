@@ -37,9 +37,6 @@ export function LoginForm() {
 
           <Field className="flex-row">
             <Button className="bg-[#d74545] rounded cursor-pointer hover:bg-[#c93f3f] active:bg-[#b33636] flex-1">Log In</Button>
-            <Button variant="ghost" className="cursor-pointer hover:bg-transparent hover:underline text-[#DB4444] hover:text-[#c93f3f]">
-              Forget Password?
-            </Button>
           </Field>
 
           <Field>

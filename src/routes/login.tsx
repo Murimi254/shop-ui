@@ -1,10 +1,15 @@
+import { RedirectAuthenticated } from "@/components/auth-guards";
 import { LoginPage } from "@/pages/login";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
-  component: LoginPage,
+  component: RouteComponent,
 });
 
-// function RouteComponent() {
-//   return <div>Hello "/login"!</div>
-// }
+function RouteComponent() {
+  return (
+    <RedirectAuthenticated>
+      <LoginPage />
+    </RedirectAuthenticated>
+  );
+}

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
-import googleIcon from "/images/auth/googleIcon.png";
 import { PasswordInput } from "../password-input";
 import type { FormEvent } from "react";
 
@@ -46,12 +45,6 @@ export function SignUpForm() {
         </Field>
         <Field>
           <Button className="bg-[#d74545] rounded cursor-pointer hover:bg-[#c93f3f] active:bg-[#b33636]">Create Account</Button>
-        </Field>
-        <Field>
-          <Button variant="outline" className="cursor-pointer">
-            <img src={googleIcon} alt="Sign up with google image" />
-            <span>Sing up with Google</span>
-          </Button>
         </Field>
         <Field>
           <p className="text-center">

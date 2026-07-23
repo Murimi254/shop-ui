@@ -11,13 +11,13 @@ const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Contact", to: "/contact" },
   { label: "About", to: "/about" },
-  { label: "Sign Up", to: "/sign-up" },
 ];
 
 export function Header() {
   const cartCount = useAppSelector(state => selectCartCount({ cart: state.cart }));
   const wishlistCount = useAppSelector(selectWishlistCount);
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  const navLinks = isAuthenticated ? NAV_LINKS : [...NAV_LINKS, { label: "Sign Up", to: "/sign-up" }];
   const [searchValue, setSearchValue] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map(link => (
+          {navLinks.map(link => (
             <Link
               key={link.to}
               to={link.to}
@@ -102,7 +102,7 @@ export function Header() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-4 flex flex-col gap-4">
-          {NAV_LINKS.map(link => (
+          {navLinks.map(link => (
             <Link key={link.to} to={link.to} className="text-sm text-black" onClick={() => setMobileMenuOpen(false)}>
               {link.label}
             </Link>

@@ -1,15 +1,17 @@
+import { useLogoutMutation } from "@/api/exclusive";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { logout } from "@/store/slices/authSlice";
+import { useAppSelector } from "@/hooks/hooks";
 import { cn } from "@/utils/utility-functions";
+import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
 type Section = "profile" | "address" | "payment" | "returns" | "cancellations" | "wishlist";
 
 export function AccountPage() {
-  const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user);
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<Section>("profile");
 
   const [form, setForm] = useState({
@@ -35,6 +37,14 @@ export function AccountPage() {
     //   }),
     // );
     // TODO: PATCH /api/user/profile
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } finally {
+      await navigate({ to: "/login" });
+    }
   };
 
   const NAV = [
@@ -94,8 +104,12 @@ export function AccountPage() {
               </ul>
             </div>
           ))}
-          <button onClick={() => dispatch(logout())} className="text-sm text-gray-500 hover:text-[#db4444] transition-colors mt-4">
-            Logout
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="text-sm text-gray-500 hover:text-[#db4444] transition-colors mt-4 disabled:opacity-60"
+          >
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </aside>
 

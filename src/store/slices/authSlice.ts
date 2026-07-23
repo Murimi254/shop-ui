@@ -36,6 +36,7 @@ export const authSlice = createSlice({
       state.accessToken = null;
       state.isAuthenticated = false;
       state.error = null;
+      state.isInitialized = true;
     },
 
     // Called after token refresh — only the access token changes
