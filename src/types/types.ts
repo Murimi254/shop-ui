@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   AdminOrdersResponseSchema,
+  AdminCategoriesResponseSchema,
   ApiProductResponseSchema,
   ApiProductSchema,
   ApproveCashPaymentRequestSchema,
@@ -59,6 +60,7 @@ export type ApiProductResponse = z.infer<typeof ApiProductResponseSchema>;
 export type ProductsViewModel = z.infer<typeof ProductsViewModelSchema>;
 
 export type CategoriesResponseData = z.infer<typeof CategoriesResponseSchema>;
+export type AdminCategoriesResponseData = z.infer<typeof AdminCategoriesResponseSchema>;
 export type CartItemRequestData = z.infer<typeof CartItemRequestSchema>;
 export type CartPreviewRequestData = z.infer<typeof CartPreviewRequestSchema>;
 export type CartPreviewResponseData = z.infer<typeof CartPreviewResponseSchema>;

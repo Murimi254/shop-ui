@@ -22,7 +22,7 @@ export function RequireAdmin({ children }: GuardProps) {
 
   if (!isInitialized) return <LoadingSpinner />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!isAdmin) return <Navigate to="/notfound" replace />;
+  if (!isAdmin) return <Navigate to="/forbidden" replace />;
 
   return children;
 }

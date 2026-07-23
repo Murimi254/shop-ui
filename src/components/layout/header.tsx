@@ -4,7 +4,7 @@ import { selectCartCount } from "@/store/slices/cartSlice";
 import { selectWishlistCount } from "@/store/slices/wishlistSlice";
 import { cn } from "@/utils/utility-functions";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Heart, LayoutDashboard, Menu, Search, ShoppingCart, User } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 const NAV_LINKS = [
@@ -17,6 +17,8 @@ export function Header() {
   const cartCount = useAppSelector(state => selectCartCount({ cart: state.cart }));
   const wishlistCount = useAppSelector(selectWishlistCount);
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  const userRole = useAppSelector(state => state.auth.user?.role);
+  const isAdmin = userRole === "admin" || userRole === "superAdmin";
   const navLinks = isAuthenticated ? NAV_LINKS : [...NAV_LINKS, { label: "Sign Up", to: "/sign-up" }];
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
@@ -64,6 +66,13 @@ export function Header() {
               <Search size={18} />
             </button>
           </form>
+
+          {/* Wishlist */}
+          {isAdmin && (
+            <Link to="/admin" className="hidden md:flex" aria-label="Admin dashboard">
+              <LayoutDashboard size={22} className="text-black hover:text-[#db4444] transition-colors" />
+            </Link>
+          )}
 
           {/* Wishlist */}
           <Link to="/wishlist" className="relative hidden md:flex">
@@ -143,6 +152,11 @@ export function Header() {
             <Link to="/account">
               <User size={20} />
             </Link>
+            {isAdmin && (
+              <Link to="/admin" onClick={() => setMobileMenuOpen(false)} aria-label="Admin dashboard">
+                <LayoutDashboard size={20} />
+              </Link>
+            )}
           </div>
         </div>
       )}

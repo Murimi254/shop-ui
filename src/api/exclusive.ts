@@ -1,7 +1,9 @@
 import { baseQueryWithReauth } from "@/api/base-query-with-reauth";
 import { login, logout as clearAuth, setAccessToken, setInitialized } from "@/store/slices/authSlice";
 import type {
+  AdminCategoriesResponseData,
   AdminOrdersResponseData,
+  ApiProductResponse,
   ApiProduct,
   ApproveCashPaymentRequestData,
   CancelOrderRequestData,
@@ -32,6 +34,7 @@ import type {
   TokensData,
 } from "@/types/types";
 import {
+  AdminCategoriesResponseSchema,
   AdminOrdersResponseSchema,
   ApiProductResponseSchema,
   ApiProductSchema,
@@ -161,6 +164,12 @@ const api = createApi({
       providesTags: ["Categories"],
     }),
 
+    getAdminCategories: builder.query<AdminCategoriesResponseData, void>({
+      query: () => ({ url: "/categories", method: "GET" }),
+      transformResponse: response => AdminCategoriesResponseSchema.parse(response),
+      providesTags: ["Categories"],
+    }),
+
     getProducts: builder.query<ProductsViewModel, { limit?: number; search?: string; page?: number }>({
       query: params => ({ url: "/products", method: "GET", params }),
       providesTags: ["Products"],
@@ -189,6 +198,12 @@ const api = createApi({
       query: productId => ({ url: `/product/${productId}`, method: "GET" }),
       transformResponse: response => ApiProductSchema.parse(response),
       providesTags: (_result, _error, productId) => [{ type: "Products", id: productId }],
+    }),
+
+    getAdminProducts: builder.query<ApiProductResponse, { limit?: number; search?: string; page?: number }>({
+      query: params => ({ url: "/products", method: "GET", params }),
+      transformResponse: response => ApiProductResponseSchema.parse(response),
+      providesTags: ["Products"],
     }),
 
     cartPreview: builder.mutation<CartPreviewResponseData, CartPreviewRequestData>({
@@ -312,6 +327,8 @@ export const {
   useEditProductMutation,
   useEditShipmentMutation,
   useGetAdminOrdersQuery,
+  useGetAdminCategoriesQuery,
+  useGetAdminProductsQuery,
   useGetCategoriesQuery,
   useGetOrderQuery,
   useGetProductQuery,

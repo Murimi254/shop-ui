@@ -105,7 +105,17 @@ export const ProductsViewModelSchema = z.object({
   }),
 });
 
-export const CategoriesResponseSchema = z.array(z.string());
+export const CategoryResponseSchema = z.object({
+  _id: IdSchema,
+  name: z.string(),
+  adminId: IdSchema,
+});
+
+const LegacyCategoriesResponseSchema = z.array(z.string());
+export const AdminCategoriesResponseSchema = z.array(CategoryResponseSchema);
+export const CategoriesResponseSchema = z
+  .union([LegacyCategoriesResponseSchema, AdminCategoriesResponseSchema])
+  .transform(categories => categories.map(category => (typeof category === "string" ? category : category.name)));
 
 export const CartItemRequestSchema = z.object({
   productId: IdSchema,
@@ -251,12 +261,6 @@ export const CategoryCreateRequestSchema = z.object({
 
 export const CategoryEditRequestSchema = CategoryCreateRequestSchema.extend({
   _id: IdSchema,
-});
-
-export const CategoryResponseSchema = z.object({
-  _id: IdSchema,
-  name: z.string(),
-  adminId: IdSchema,
 });
 
 export const MessageResponseSchema = z.object({
