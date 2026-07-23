@@ -3,9 +3,9 @@ import { useAppSelector } from "@/hooks/hooks";
 import { selectCartCount } from "@/store/slices/cartSlice";
 import { selectWishlistCount } from "@/store/slices/wishlistSlice";
 import { cn } from "@/utils/utility-functions";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
@@ -18,12 +18,15 @@ export function Header() {
   const wishlistCount = useAppSelector(selectWishlistCount);
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
   const navLinks = isAuthenticated ? NAV_LINKS : [...NAV_LINKS, { label: "Sign Up", to: "/sign-up" }];
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  function searchHandler() {
-    //send it to backend and get results
-    console.log("Your search query is", searchValue);
+  async function searchHandler(event?: FormEvent) {
+    event?.preventDefault();
+    const query = searchValue.trim();
+    await navigate({ to: "/", search: query ? { q: query } : {} });
+    setMobileMenuOpen(false);
   }
 
   return (
@@ -50,15 +53,17 @@ export function Header() {
         {/* Search + Icons */}
         <div className="flex items-center gap-4 ml-auto">
           {/* Search bar */}
-          <div className="hidden md:flex items-center relative">
+          <form onSubmit={searchHandler} className="hidden md:flex items-center relative">
             <Input
               placeholder="What are you looking for?"
               value={searchValue}
               onChange={e => setSearchValue(e.target.value)}
               className="w-60 pr-10 bg-[#f5f5f5] border-none rounded text-sm"
             />
-            <Search onClick={searchHandler} size={18} className="absolute right-3 text-gray-500 cursor-pointer" />
-          </div>
+            <button type="submit" className="absolute right-3 text-gray-500 hover:text-[#db4444]" aria-label="Search products">
+              <Search size={18} />
+            </button>
+          </form>
 
           {/* Wishlist */}
           <Link to="/wishlist" className="relative hidden md:flex">
@@ -107,6 +112,17 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <form onSubmit={searchHandler} className="flex items-center relative">
+            <Input
+              placeholder="What are you looking for?"
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              className="w-full pr-10 bg-[#f5f5f5] border-none rounded text-sm"
+            />
+            <button type="submit" className="absolute right-3 text-gray-500 hover:text-[#db4444]" aria-label="Search products">
+              <Search size={18} />
+            </button>
+          </form>
           <div className="flex gap-4 pt-2 border-t border-gray-100">
             <Link to="/wishlist" className="relative">
               <Heart size={20} />

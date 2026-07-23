@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Minus, Plus, Heart, Truck, RefreshCw } from "lucide-react";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useGetProductQuery, useGetProductsQuery } from "@/api/exclusive";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -18,9 +18,14 @@ export function ProductDetailPage() {
   const { data: productsData } = useGetProductsQuery({ limit: 30 });
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isWishlisted = useAppSelector(selectIsWishlisted(productId));
 
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    if (product?.quantity) setQuantity(currentQuantity => Math.min(currentQuantity, product.quantity));
+  }, [product?.quantity]);
 
   if (isLoading) {
     return (
@@ -60,6 +65,7 @@ export function ProductDetailPage() {
   const relatedProducts = productsData?.products.filter(item => item.category === product.category && item.id !== product._id).slice(0, 4) ?? [];
 
   const handleAddToCart = () => {
+    if (product.quantity <= 0) return;
     dispatch(
       addToCart({
         id: product._id,
@@ -67,13 +73,14 @@ export function ProductDetailPage() {
         price: product.price,
         image: product.imageUrl,
         quantity,
+        maxQuantity: product.quantity,
       }),
     );
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     handleAddToCart();
-    // TODO: navigate to checkout
+    if (product.quantity > 0) await navigate({ to: "/checkout" });
   };
 
   return (
@@ -106,10 +113,11 @@ export function ProductDetailPage() {
           <p className="text-sm text-gray-500 mb-6">{product.quantity} available</p>
 
           {/* Quantity + Buy */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-6 flex-wrap">
             <div className="flex items-center border border-gray-300 rounded overflow-hidden">
               <button
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                disabled={product.quantity === 0 || quantity <= 1}
                 className="w-10 h-11 flex items-center justify-center hover:bg-gray-100 transition-colors"
               >
                 <Minus size={16} />
@@ -126,8 +134,12 @@ export function ProductDetailPage() {
               </button>
             </div>
 
-            <Button size="lg" onClick={handleBuyNow} disabled={product.quantity === 0} className="flex-1">
+            <Button size="lg" onClick={handleAddToCart} disabled={product.quantity === 0} className="flex-1 min-w-32">
               Add To Cart
+            </Button>
+
+            <Button size="lg" onClick={handleBuyNow} disabled={product.quantity === 0} className="flex-1 min-w-32">
+              Buy Now
             </Button>
 
             <button

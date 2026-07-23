@@ -2,28 +2,33 @@ import Iphone14Image from "@/assets/images/iphone_carousel.png";
 import JBLSpeaker from "@/assets/images/JBL.png";
 import PS5Image from "@/assets/images/ps5-carousel.png";
 import SamsungImage from "@/assets/images/samsung-carousel.png";
-import { useGetProductsQuery } from "@/api/exclusive";
+import { useGetCategoriesQuery, useGetProductsQuery } from "@/api/exclusive";
 import { Button } from "@/components/ui/button";
 import { Countdown } from "@/components/ui/countdown";
 import { ProductCard } from "@/components/ui/product-card";
 import { SectionLabel } from "@/components/ui/section-label";
-import { CATEGORIES, SIDEBAR_CATEGORIES } from "@/data/products";
-import { useAppDispatch } from "@/hooks/hooks";
-import { addToCart } from "@/store/slices/cartSlice";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Camera, ChevronLeft, ChevronRight, Gamepad2, Headphones, Headset, Monitor, ShieldCheck, Smartphone, Truck, Watch } from "lucide-react";
-import React, { useState } from "react";
+import { useState, type ElementType } from "react";
 import WomanWearingHat from "@/assets/images/woman-wearing-hat.png";
 import GucciPerfume from "@/assets/images/gucci-perfume.png";
 import AmazonSpeaker from "@/assets/images/amazon-speakers.png";
 import { LoadingSpinner } from "@/components/loading-spinner";
 
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
+const CATEGORY_ICONS: Record<string, ElementType> = {
+  phone: Smartphone,
+  phones: Smartphone,
   smartphone: Smartphone,
-  monitor: Monitor,
+  computer: Monitor,
+  computers: Monitor,
+  electronics: Monitor,
+  smartwatch: Watch,
   watch: Watch,
   camera: Camera,
+  cameras: Camera,
   headphones: Headphones,
-  "gamepad-2": Gamepad2,
+  audio: Headphones,
+  gaming: Gamepad2,
 };
 
 const HERO_SLIDES = [
@@ -35,26 +40,24 @@ const HERO_SLIDES = [
 const flashSaleEnd = new Date(Date.now() + 3 * 3600 * 1000 + 23 * 60 * 1000 + 19 * 1000);
 
 export function HomePage() {
-  const { data, isLoading, isError } = useGetProductsQuery({ limit: 30 });
+  const search = useSearch({ from: "/" });
+  const navigate = useNavigate({ from: "/" });
+  const searchTerm = search.q ?? "";
+  const activeCategory = search.category ?? "";
+  const { data, isLoading, isError } = useGetProductsQuery({ limit: 30, search: searchTerm || undefined });
+  const { data: categories = [], isLoading: isLoadingCategories } = useGetCategoriesQuery();
   const [heroSlide, setHeroSlide] = useState(0);
-  const [activeCategoryIdx, setActiveCategoryIdx] = useState(3); // Camera active in wireframe
-  const dispatch = useAppDispatch();
 
-  function buyJblNowHandler() {
-    dispatch(
-      addToCart({
-        id: "9874",
-        image: "",
-        name: "JBL Speaker",
-        price: 34,
-        quantity: 1,
-      }),
-    );
+  const products = data?.products ?? [];
+  const visibleProducts = activeCategory ? products.filter(product => sameCategory(product.category, activeCategory)) : products;
+  const showFilteredCatalog = Boolean(searchTerm || activeCategory);
+  const flashSaleProducts = data?.sections.flashSale ?? [];
+  const bestSellingProducts = data?.sections.bestSelling ?? [];
+  const catalogHeading = searchTerm ? `Search results for "${searchTerm}"` : activeCategory || "Explore Our Products";
+
+  function setCategory(category?: string) {
+    void navigate({ to: "/", search: { q: searchTerm || undefined, category } });
   }
-
-  const FLASH_SALE_PRODUCTS = data?.sections.flashSale;
-  const BEST_SELLING_PRODUCTS = data?.sections.bestSelling;
-  const EXPLORE_PRODUCTS = data?.products;
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -71,19 +74,30 @@ export function HomePage() {
         {/* Sidebar categories */}
         <aside className="hidden lg:block w-55 border-r border-gray-200 pr-4 pt-2 shrink-0">
           <ul className="space-y-1">
-            {SIDEBAR_CATEGORIES.map(cat => (
+            <li>
+              <button
+                onClick={() => setCategory(undefined)}
+                className={`w-full flex items-center justify-between text-sm py-2 px-1 text-left transition-colors ${
+                  !activeCategory ? "text-[#db4444] font-medium" : "hover:text-[#db4444]"
+                }`}
+              >
+                All Products
+              </button>
+            </li>
+            {categories.map(cat => (
               <li key={cat}>
-                <a
-                  href="#explore-products"
-                  className="scroll-smooth w-full flex items-center justify-between text-sm py-2 px-1 hover:text-[#db4444] text-left transition-colors group"
+                <button
+                  onClick={() => setCategory(cat)}
+                  className={`w-full flex items-center justify-between text-sm py-2 px-1 text-left transition-colors group ${
+                    sameCategory(activeCategory, cat) ? "text-[#db4444] font-medium" : "hover:text-[#db4444]"
+                  }`}
                 >
                   {cat}
-                  {(cat === "Woman's Fashion" || cat === "Men's Fashion") && (
-                    <ChevronRight size={14} className="text-gray-400 group-hover:text-[#db4444]" />
-                  )}
-                </a>
+                  <ChevronRight size={14} className="text-gray-400 group-hover:text-[#db4444]" />
+                </button>
               </li>
             ))}
+            {!isLoadingCategories && categories.length === 0 && <li className="text-sm text-gray-400 py-2 px-1">No categories yet.</li>}
           </ul>
         </aside>
 
@@ -126,8 +140,10 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ─── Flash Sales ─── */}
-      <section className="mb-16">
+      {!showFilteredCatalog && (
+        <>
+          {/* ─── Flash Sales ─── */}
+          <section className="mb-16">
         <div className="flex items-end justify-between mb-6">
           <div>
             <SectionLabel tag="Today's" />
@@ -147,7 +163,7 @@ export function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {FLASH_SALE_PRODUCTS?.map(p => (
+          {flashSaleProducts.map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -158,7 +174,9 @@ export function HomePage() {
           </Button>
         </a>
         <hr className="mt-10 border-gray-200" />
-      </section>
+          </section>
+        </>
+      )}
 
       {/* ─── Browse By Category ─── */}
       <section className="mb-16">
@@ -177,85 +195,114 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-          {CATEGORIES.map((cat, i) => {
-            const Icon = CATEGORY_ICONS[cat.icon];
-            const isActive = i === activeCategoryIdx;
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <button
+            onClick={() => setCategory(undefined)}
+            className={`flex flex-col items-center justify-center gap-3 min-h-32 py-6 border rounded transition-colors ${
+              !activeCategory ? "bg-[#db4444] text-white border-[#db4444]" : "border-gray-200 hover:border-[#db4444] hover:text-[#db4444]"
+            }`}
+          >
+            <Monitor size={36} />
+            <span className="text-sm font-medium">All</span>
+          </button>
+          {categories.map(cat => {
+            const Icon = getCategoryIcon(cat);
+            const isActive = sameCategory(activeCategory, cat);
             return (
               <button
-                key={cat.id}
-                onClick={() => setActiveCategoryIdx(i)}
-                className={`flex flex-col items-center justify-center gap-3 py-6 border rounded transition-colors ${
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`flex flex-col items-center justify-center gap-3 min-h-32 py-6 border rounded transition-colors ${
                   isActive ? "bg-[#db4444] text-white border-[#db4444]" : "border-gray-200 hover:border-[#db4444] hover:text-[#db4444]"
                 }`}
               >
-                {Icon && <Icon size={36} />}
-                <span className="text-sm font-medium">{cat.name}</span>
+                <Icon size={36} />
+                <span className="text-sm font-medium text-center px-2">{cat}</span>
               </button>
             );
           })}
         </div>
+        {!isLoadingCategories && categories.length === 0 && <p className="text-sm text-gray-500 mt-4">No categories have been published yet.</p>}
         <hr className="mt-10 border-gray-200" />
       </section>
 
-      {/* ─── Best Selling Products ─── */}
-      <section className="mb-16">
-        <div className="flex items-end justify-between mb-6">
-          <div>
-            <SectionLabel tag="This Month" />
-            <h2 className="text-3xl font-bold -mt-4">Best Selling Products</h2>
-          </div>
-          <a href="#explore-products">
-            <Button variant="default">View All</Button>
-          </a>
-        </div>
+      {!showFilteredCatalog && (
+        <>
+          {/* ─── Best Selling Products ─── */}
+          <section className="mb-16">
+            <div className="flex items-end justify-between mb-6">
+              <div>
+                <SectionLabel tag="This Month" />
+                <h2 className="text-3xl font-bold -mt-4">Best Selling Products</h2>
+              </div>
+              <a href="#explore-products">
+                <Button variant="default">View All</Button>
+              </a>
+            </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {BEST_SELLING_PRODUCTS?.map(p => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {bestSellingProducts.map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
 
-      {/* ─── Promo Banner (Music) ─── */}
-      <section className="mb-16 rounded overflow-hidden bg-black relative min-h-[300px] flex items-center px-12">
-        <div className="z-10 text-white">
-          <p className="text-[#00ff66] font-semibold mb-2">Categories</p>
-          <h2 className="text-4xl font-bold leading-tight mb-6">
-            Enhance Your
-            <br />
-            Music Experience
-          </h2>
-          <Countdown initialSeconds={23 * 3600 + 5 * 60 + 59} variant="dark" />
-          <Button onClick={buyJblNowHandler} className="mt-6 bg-[#00ff66] text-black hover:bg-[#00dd55] font-semibold">
-            Buy Now!
-          </Button>
-        </div>
-        <div className="absolute right-12 top-1/2 -translate-y-1/2">
-          <img src={JBLSpeaker} alt="JBL Speaker" className="w-72 h-56 object-contain" />
-        </div>
-      </section>
+          {/* ─── Promo Banner (Music) ─── */}
+          <section className="mb-16 rounded overflow-hidden bg-black relative min-h-[300px] flex items-center px-12">
+            <div className="z-10 text-white">
+              <p className="text-[#00ff66] font-semibold mb-2">Categories</p>
+              <h2 className="text-4xl font-bold leading-tight mb-6">
+                Enhance Your
+                <br />
+                Music Experience
+              </h2>
+              <Countdown initialSeconds={23 * 3600 + 5 * 60 + 59} variant="dark" />
+              <Button asChild className="mt-6 bg-[#00ff66] text-black hover:bg-[#00dd55] font-semibold">
+                <a href="#explore-products">Shop Products</a>
+              </Button>
+            </div>
+            <div className="absolute right-12 top-1/2 -translate-y-1/2">
+              <img src={JBLSpeaker} alt="JBL Speaker" className="w-72 h-56 object-contain" />
+            </div>
+          </section>
+        </>
+      )}
 
       {/* ─── Explore Our Products ─── */}
       <section id="explore-products" className="mb-16">
         <SectionLabel tag="Our Products" />
-        <div className="flex items-end justify-between -mt-4 mb-6">
-          <h2 className="text-3xl font-bold">Explore Our Products</h2>
-          <div className="flex gap-2">
-            {/* <button className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100">
-              <ChevronLeft size={18} />
-            </button>
-            <button className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100">
-              <ChevronRight size={18} />
-            </button> */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between -mt-4 mb-6 gap-4">
+          <div>
+            <h2 className="text-3xl font-bold">{catalogHeading}</h2>
+            {showFilteredCatalog && (
+              <p className="text-sm text-gray-500 mt-2">
+                {visibleProducts.length} {visibleProducts.length === 1 ? "product" : "products"} found
+                {activeCategory ? ` in ${activeCategory}` : ""}.
+              </p>
+            )}
           </div>
+          {showFilteredCatalog && (
+            <Button variant="outline" onClick={() => void navigate({ to: "/", search: {} })}>
+              Clear Filters
+            </Button>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {EXPLORE_PRODUCTS?.map(p => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {visibleProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {visibleProducts.map(p => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        ) : (
+          <div className="border border-gray-200 rounded p-10 text-center">
+            <p className="text-lg font-medium mb-2">No products found.</p>
+            <p className="text-sm text-gray-500 mb-6">Try a different search term or clear the category filter.</p>
+            <Button variant="outline" onClick={() => void navigate({ to: "/", search: {} })}>
+              View All Products
+            </Button>
+          </div>
+        )}
 
         <div className="flex justify-center mt-10">
           {/* <Button variant="default" size="lg">
@@ -264,11 +311,11 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ─── New Arrival ─── */}
-      <section className="mb-16 ">
-        <SectionLabel tag="Featured" />
-        <h2 className="text-3xl font-bold -mt-4 mb-8">New Arrival</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[500px]">
+      {!showFilteredCatalog && (
+        <section className="mb-16 ">
+          <SectionLabel tag="Featured" />
+          <h2 className="text-3xl font-bold -mt-4 mb-8">New Arrival</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[500px]">
           {/* Large left */}
           <div className="bg-black rounded overflow-hidden relative group cursor-pointer h-full">
             <img src={PS5Image} alt="PS5" className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity" />
@@ -323,9 +370,10 @@ export function HomePage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      <section className="h-70"></section>
+          </div>
+        </section>
+      )}
+      {!showFilteredCatalog && <section className="h-70"></section>}
       {/* ─── Service Features ─── */}
       <section className=" border-t border-gray-200 py-16 mb-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -348,4 +396,16 @@ export function HomePage() {
       </section>
     </div>
   );
+}
+
+function sameCategory(left: string, right: string) {
+  return normalizeCategory(left) === normalizeCategory(right);
+}
+
+function normalizeCategory(category: string) {
+  return category.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function getCategoryIcon(category: string) {
+  return CATEGORY_ICONS[normalizeCategory(category)] ?? Monitor;
 }

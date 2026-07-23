@@ -17,6 +17,7 @@ interface ProductCardProps {
 export function ProductCard({ product, showAddToCart = false }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const isWishlisted = useAppSelector(selectIsWishlisted(product.id));
+  const canAddToCart = product.inStock !== false;
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ export function ProductCard({ product, showAddToCart = false }: ProductCardProps
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!canAddToCart) return;
     dispatch(
       addToCart({
         id: product.id,
@@ -79,11 +81,12 @@ export function ProductCard({ product, showAddToCart = false }: ProductCardProps
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 bg-black text-white text-center py-2 text-sm font-medium transition-transform duration-200",
+            !canAddToCart && "bg-gray-500",
             showAddToCart ? "translate-y-0" : "translate-y-full group-hover:translate-y-0",
           )}
         >
-          <button onClick={handleAddToCart} className="w-full">
-            Add To Cart
+          <button onClick={handleAddToCart} disabled={!canAddToCart} className="w-full disabled:cursor-not-allowed">
+            {canAddToCart ? "Add To Cart" : "Out of Stock"}
           </button>
         </div>
       </div>

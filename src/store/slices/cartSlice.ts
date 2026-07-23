@@ -6,20 +6,17 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  maxQuantity?: number;
   color?: string;
   size?: string;
 }
 
 interface CartState {
   items: CartItem[];
-  couponCode: string;
-  couponDiscount: number;
 }
 
 const initialState: CartState = {
   items: [],
-  couponCode: "",
-  couponDiscount: 0,
 };
 
 const cartSlice = createSlice({
@@ -29,9 +26,10 @@ const cartSlice = createSlice({
     addToCart(state, action: PayloadAction<CartItem>) {
       const existing = state.items.find(i => i.id === action.payload.id);
       if (existing) {
-        existing.quantity += action.payload.quantity;
+        existing.maxQuantity = action.payload.maxQuantity ?? existing.maxQuantity;
+        existing.quantity = clampQuantity(existing.quantity + action.payload.quantity, existing.maxQuantity);
       } else {
-        state.items.push(action.payload);
+        state.items.push({ ...action.payload, quantity: clampQuantity(action.payload.quantity, action.payload.maxQuantity) });
       }
     },
     removeFromCart(state, action: PayloadAction<string>) {
@@ -40,23 +38,21 @@ const cartSlice = createSlice({
     updateQuantity(state, action: PayloadAction<{ id: string; quantity: number }>) {
       const item = state.items.find(i => i.id === action.payload.id);
       if (item) {
-        item.quantity = Math.max(1, action.payload.quantity);
+        item.quantity = clampQuantity(action.payload.quantity, item.maxQuantity);
       }
     },
     clearCart(state) {
       state.items = [];
-      state.couponCode = "";
-      state.couponDiscount = 0;
-    },
-    applyCoupon(state, action: PayloadAction<string>) {
-      // TODO: wire to backend coupon validation
-      state.couponCode = action.payload;
-      state.couponDiscount = action.payload === "EXCLUSIVE10" ? 10 : 0;
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart, applyCoupon } = cartSlice.actions;
+function clampQuantity(quantity: number, maxQuantity?: number) {
+  const minimumQuantity = Math.max(1, quantity);
+  return maxQuantity ? Math.min(minimumQuantity, maxQuantity) : minimumQuantity;
+}
+
+export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
 
