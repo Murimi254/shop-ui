@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Minus, Plus, Heart, Truck, RefreshCw } from "lucide-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -10,7 +10,7 @@ import { SectionLabel } from "@/components/ui/section-label";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addToCart } from "@/store/slices/cartSlice";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
-import type { Product } from "@/data/products";
+import type { UiProduct } from "@/types/types";
 import { cn, formatPrice } from "@/utils/utility-functions";
 export function ProductDetailPage() {
   const { productId } = useParams({ from: "/product/$productId" });
@@ -23,13 +23,9 @@ export function ProductDetailPage() {
 
   const [quantity, setQuantity] = useState(1);
 
-  useEffect(() => {
-    if (product?.quantity) setQuantity(currentQuantity => Math.min(currentQuantity, product.quantity));
-  }, [product?.quantity]);
-
   if (isLoading) {
     return (
-      <div className="max-w-300 mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div className="bg-[#f5f5f5] rounded min-h-100 animate-pulse" />
           <div className="space-y-4">
@@ -44,14 +40,14 @@ export function ProductDetailPage() {
 
   if (isError || !product) {
     return (
-      <div className="max-w-300 mx-auto px-4 py-16 text-center">
+      <div className="max-w-[1200px] mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-3">Product not found</h1>
         <p className="text-gray-500">The product you are looking for is unavailable or may have been removed.</p>
       </div>
     );
   }
 
-  const wishlistProduct: Product = {
+  const wishlistProduct: UiProduct = {
     id: product._id,
     name: product.name,
     price: product.price,
@@ -63,6 +59,7 @@ export function ProductDetailPage() {
     inStock: product.quantity > 0,
   };
   const relatedProducts = productsData?.products.filter(item => item.category === product.category && item.id !== product._id).slice(0, 4) ?? [];
+  const selectedQuantity = product.quantity > 0 ? Math.min(quantity, product.quantity) : 0;
 
   const handleAddToCart = () => {
     if (product.quantity <= 0) return;
@@ -72,7 +69,7 @@ export function ProductDetailPage() {
         name: product.name,
         price: product.price,
         image: product.imageUrl,
-        quantity,
+        quantity: selectedQuantity,
         maxQuantity: product.quantity,
       }),
     );
@@ -84,7 +81,7 @@ export function ProductDetailPage() {
   };
 
   return (
-    <div className="max-w-300 mx-auto px-4 py-8">
+    <div className="max-w-[1200px] mx-auto px-4 py-8">
       <Breadcrumb items={[{ label: "Products", to: "/" }, { label: product.category, to: "/" }, { label: product.name }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
@@ -93,7 +90,6 @@ export function ProductDetailPage() {
           <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain max-h-105 p-6" />
         </div>
 
-        {/* ─── Product Info ─── */}
         <div>
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
@@ -116,18 +112,18 @@ export function ProductDetailPage() {
           <div className="flex items-center gap-4 mb-6 flex-wrap">
             <div className="flex items-center border border-gray-300 rounded overflow-hidden">
               <button
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                disabled={product.quantity === 0 || quantity <= 1}
+                onClick={() => setQuantity(q => Math.max(1, Math.min(q, product.quantity) - 1))}
+                disabled={product.quantity === 0 || selectedQuantity <= 1}
                 className="w-10 h-11 flex items-center justify-center hover:bg-gray-100 transition-colors"
               >
                 <Minus size={16} />
               </button>
               <span className="w-12 text-center text-sm font-semibold border-x border-gray-300 h-11 flex items-center justify-center">
-                {String(quantity).padStart(2, "0")}
+                {String(Math.max(selectedQuantity, 1)).padStart(2, "0")}
               </span>
               <button
                 onClick={() => setQuantity(q => Math.min(product.quantity, q + 1))}
-                disabled={product.quantity === 0 || quantity >= product.quantity}
+                disabled={product.quantity === 0 || selectedQuantity >= product.quantity}
                 className="w-10 h-11 flex items-center justify-center bg-[#db4444] text-white hover:bg-[#c03535] transition-colors"
               >
                 <Plus size={16} />

@@ -13,7 +13,7 @@ export function WishlistPage() {
   const items = useAppSelector(selectWishlistItems);
 
   return (
-    <div className="max-w-300 mx-auto px-4 py-10">
+    <div className="max-w-[1200px] mx-auto px-4 py-10">
       {/* Header row */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-base font-medium">
@@ -78,7 +78,7 @@ export function WishlistPage() {
                       }),
                     )
                   }
-                  className="absolute bottom-0 left-0 right-0 bg-black text-white text-center py-2 text-sm font-medium translate-y-full group-hover:translate-y-0 transition-transform"
+                  className="absolute bottom-0 left-0 right-0 bg-black text-white text-center py-2 text-sm font-medium translate-y-0 sm:translate-y-full sm:group-hover:translate-y-0 transition-transform"
                 >
                   Add To Cart
                 </button>

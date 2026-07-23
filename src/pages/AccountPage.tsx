@@ -6,11 +6,10 @@ import { useGetOrderQuery, useLogoutMutation } from "@/api/exclusive";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks/hooks";
+import { selectLastOrderId, selectLastShipmentId } from "@/store/slices/checkoutSlice";
 import { formatPrice, cn } from "@/utils/utility-functions";
 
 type Section = "profile" | "shipment" | "orders" | "wishlist";
-
-const LAST_ORDER_ID_KEY = "exclusive:lastOrderId";
 
 const NAV: Array<{ key: Section; label: string; icon: React.ReactNode }> = [
   { key: "profile", label: "Profile", icon: <User className="h-4 w-4" /> },
@@ -24,7 +23,8 @@ export function AccountPage() {
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<Section>("profile");
-  const lastOrderId = localStorage.getItem(LAST_ORDER_ID_KEY) ?? "";
+  const lastOrderId = useAppSelector(selectLastOrderId) ?? "";
+  const lastShipmentId = useAppSelector(selectLastShipmentId);
   const lastOrderQuery = useGetOrderQuery(lastOrderId, { skip: !lastOrderId });
 
   const handleLogout = async () => {
@@ -36,7 +36,7 @@ export function AccountPage() {
   };
 
   return (
-    <div className="max-w-300 mx-auto px-4 py-8">
+    <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-4">
         <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "My Account" }]} />
         <p className="text-sm">
@@ -92,6 +92,12 @@ export function AccountPage() {
               <p className="text-sm text-gray-600 mb-6">
                 Checkout saves your latest shipping address before placing an order. A saved-address view can be added after the backend exposes a customer shipment fetch endpoint.
               </p>
+              {lastShipmentId && (
+                <div className="mb-6 rounded border border-gray-200 p-4">
+                  <p className="text-xs uppercase text-gray-500">Latest shipment ID</p>
+                  <p className="break-all text-sm font-medium">{lastShipmentId}</p>
+                </div>
+              )}
               <Button asChild>
                 <Link to="/checkout">Go to checkout</Link>
               </Button>

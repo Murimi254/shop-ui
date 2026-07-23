@@ -5,7 +5,6 @@ import {
   ApiProductResponseSchema,
   ApiProductSchema,
   ApproveCashPaymentRequestSchema,
-  AuthStatusSchema,
   CancelOrderRequestSchema,
   CartItemRequestSchema,
   CartPreviewRequestSchema,
@@ -44,7 +43,6 @@ import {
 
 export type UserRoleData = z.infer<typeof UserRoleSchema>;
 export type UserData = z.infer<typeof UserSchema>;
-export type AuthStatusData = z.infer<typeof AuthStatusSchema>;
 
 export type LoginResponseData = z.infer<typeof LoginResponseSchema>;
 export type LoginCredentialsData = z.infer<typeof LoginCredentialsSchema>;

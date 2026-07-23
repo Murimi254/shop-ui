@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Product } from "@/data/products";
+import type { UiProduct } from "@/types/types";
 
 interface WishlistState {
-  items: Product[];
+  items: UiProduct[];
 }
 
 const initialState: WishlistState = { items: [] };
@@ -11,7 +11,7 @@ const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    toggleWishlist(state, action: PayloadAction<Product>) {
+    toggleWishlist(state, action: PayloadAction<UiProduct>) {
       const idx = state.items.findIndex(i => i.id === action.payload.id);
       if (idx >= 0) {
         state.items.splice(idx, 1);

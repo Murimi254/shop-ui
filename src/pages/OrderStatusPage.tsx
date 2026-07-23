@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { AlertCircle, Download, Loader2, RefreshCw, XCircle } from "lucide-react";
 import { API_BASE_URL } from "@/api/base-query-with-reauth";
@@ -6,28 +6,34 @@ import { useCancelOrderMutation, useGetOrderQuery } from "@/api/exclusive";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppSelector } from "@/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { selectLastOrderId, setLastOrderId } from "@/store/slices/checkoutSlice";
 import { getApiErrorMessage } from "@/utils/api-error";
+import { checkoutStorage } from "@/utils/checkout-storage";
 import { cn, formatPrice } from "@/utils/utility-functions";
 
-const LAST_ORDER_ID_KEY = "exclusive:lastOrderId";
-
 export function OrderStatusPage() {
+  const dispatch = useAppDispatch();
   const accessToken = useAppSelector(state => state.auth.accessToken);
-  const [orderId, setOrderId] = useState(() => localStorage.getItem(LAST_ORDER_ID_KEY) ?? "");
+  const lastOrderId = useAppSelector(selectLastOrderId) ?? "";
+  const [orderId, setOrderId] = useState(lastOrderId);
   const [lookupId, setLookupId] = useState(orderId);
   const [downloadError, setDownloadError] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
   const orderQuery = useGetOrderQuery(lookupId, { skip: !lookupId });
   const [cancelOrder, cancelState] = useCancelOrderMutation();
 
-  useEffect(() => {
-    if (lookupId) localStorage.setItem(LAST_ORDER_ID_KEY, lookupId);
-  }, [lookupId]);
-
   const order = orderQuery.data;
   const canCancel = order?.orderStatus === "PENDING" && order.paymentStatus !== "SUCCESS";
   const canDownloadInvoice = order?.paymentStatus === "SUCCESS";
+
+  function handleCheckStatus() {
+    const trimmedOrderId = orderId.trim();
+    setOrderId(trimmedOrderId);
+    setLookupId(trimmedOrderId);
+    dispatch(setLastOrderId(trimmedOrderId));
+    checkoutStorage.setLastOrderId(trimmedOrderId);
+  }
 
   async function handleCancelOrder() {
     if (!order) return;
@@ -74,7 +80,7 @@ export function OrderStatusPage() {
           <label className="mb-1.5 block text-sm font-medium">Order ID</label>
           <Input value={orderId} onChange={event => setOrderId(event.target.value.trim())} placeholder="Paste an order ID" />
         </div>
-        <Button onClick={() => setLookupId(orderId)} disabled={!orderId}>
+        <Button onClick={handleCheckStatus} disabled={!orderId}>
           Check status
         </Button>
       </div>

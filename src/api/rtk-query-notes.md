@@ -95,7 +95,7 @@ Let us now dive deeper into each of these properties passed to the createApi its
    ```
 
 4. **`keepUnusedDataFor`** Controls how long(in seconds)cached data stay alive after no component is using it anymore. Receives the number of seconds. Can be set both on the createApi and specific endpoint. The endpoint one takes precedence.
-5. **`refetchOnMountOrArgChange`** Controls whether a query re-fetches when a component mounts or when the query argument changes, even if cached data exists. It receives Either a boolean or a number (seconds). By default RTK Query is very cache-happy — it won't re-fetch if it already has data. This lets you change that behavior globally.
+5. **`refetchOnMountOrArgChange`** Controls whether a query re-fetches when a component mounts or when the query argument changes, even if cached data exists. It receives Either a boolean or a number (seconds). By default RTK Query is very cache-happy - it won't re-fetch if it already has data. This lets you change that behavior globally.
 
    ```javascript
    const api = createApi({
@@ -107,7 +107,7 @@ Let us now dive deeper into each of these properties passed to the createApi its
    });
    ```
 
-6. **`refetchOnFocus`** Automatically re-fetches active queries when the user comes back to the browser tab/window after being away. Great for keeping data fresh when users switch tabs and come back — like a dashboard with live numbers.
+6. **`refetchOnFocus`** Automatically re-fetches active queries when the user comes back to the browser tab/window after being away. Great for keeping data fresh when users switch tabs and come back - like a dashboard with live numbers.
 
    ```javascript
    const api = createApi({
@@ -127,7 +127,7 @@ Let us now dive deeper into each of these properties passed to the createApi its
 
    Also needs `setupListeners(store.dispatch)` just like `refetchOnFocus`.
 
-8. **`extractRehydrationInfo`** Lets you rehydrate (restore) the RTK Query cache from server-side rendering (SSR) or persisted storage — like when using Next.js or redux-persist.  
+8. **`extractRehydrationInfo`** Lets you rehydrate (restore) the RTK Query cache from server-side rendering (SSR) or persisted storage - like when using Next.js or redux-persist.  
    It returns the previously saved cache state, or `undefined` if not applicable.  
    Without this, users doing SSR would see a flash of empty content because the cache would start empty even though the server already fetched the data.
 

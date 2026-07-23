@@ -4,7 +4,6 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 type InitialState = {
   user: UserData | null;
   accessToken: string | null;
-  error: string | null;
   isInitialized: boolean;
   isAuthenticated: boolean;
 };
@@ -15,7 +14,6 @@ const initialState: InitialState = {
   user: null,
   accessToken: null,
   isAuthenticated: false,
-  error: null,
   isInitialized: false,
 };
 
@@ -28,28 +26,18 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-      state.error = null;
     },
 
     logout(state) {
       state.user = null;
       state.accessToken = null;
       state.isAuthenticated = false;
-      state.error = null;
       state.isInitialized = true;
     },
 
-    // Called after token refresh — only the access token changes
+    // Called after token refresh; only the access token changes.
     setAccessToken(state, action: PayloadAction<string>) {
       state.accessToken = action.payload;
-    },
-
-    setError(state, action: PayloadAction<string>) {
-      state.error = action.payload;
-    },
-
-    clearError(state) {
-      state.error = null;
     },
 
     setInitialized(state) {
@@ -58,4 +46,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError, setAccessToken, login, setError, setInitialized } = authSlice.actions;
+export const { logout, setAccessToken, login, setInitialized } = authSlice.actions;

@@ -12,8 +12,6 @@ export const UserSchema = z.object({
   role: UserRoleSchema,
 });
 
-export const AuthStatusSchema = z.enum(["idle", "loading", "authenticated", "error"]);
-
 export const TokensSchema = z.object({
   accessToken: JwtSchema,
   refreshToken: JwtSchema,
@@ -70,7 +68,7 @@ export const UiProductSchema = z.object({
   image: z.string(),
   images: z.array(z.string()).optional(),
   category: z.string(),
-  badge: z.string().optional().default("NEW"),
+  badge: z.string().optional(),
   colors: z.array(z.string()).optional(),
   sizes: z.array(z.string()).optional(),
   description: z.string().optional(),

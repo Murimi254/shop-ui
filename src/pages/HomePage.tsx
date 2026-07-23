@@ -68,9 +68,8 @@ export function HomePage() {
   }
 
   return (
-    <div className="max-w-300 mx-auto px-4">
-      {/* ─── Hero Section ─── */}
-      <section className="flex gap-0 mt-6 mb-16 min-h-86">
+    <div className="max-w-[1200px] mx-auto px-4">
+      <section className="flex flex-col lg:flex-row gap-0 mt-6 mb-16">
         {/* Sidebar categories */}
         <aside className="hidden lg:block w-55 border-r border-gray-200 pr-4 pt-2 shrink-0">
           <ul className="space-y-1">
@@ -102,16 +101,16 @@ export function HomePage() {
         </aside>
 
         {/* Hero carousel */}
-        <div className="flex-1 relative bg-black rounded overflow-hidden ml-0 lg:ml-6 min-h-[340px]">
-          <div className="absolute inset-0 flex items-center justify-between p-8">
-            <div className="text-white z-10">
+        <div className="flex-1 relative bg-black rounded overflow-hidden ml-0 lg:ml-6 min-h-[420px] sm:min-h-[340px]">
+          <div className="absolute inset-0 flex items-center justify-between p-5 sm:p-8">
+            <div className="text-white z-10 max-w-[250px] sm:max-w-sm">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
                   <div className="w-3 h-3 bg-black rounded-full" />
                 </div>
                 <span className="text-sm">{HERO_SLIDES[heroSlide].brand}</span>
               </div>
-              <h1 className="text-4xl font-bold leading-tight mb-4">{HERO_SLIDES[heroSlide].title}</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-4">{HERO_SLIDES[heroSlide].title}</h1>
               <p className="text-lg mb-6">{HERO_SLIDES[heroSlide].subtitle}</p>
               <a
                 href="#explore-products"
@@ -122,8 +121,8 @@ export function HomePage() {
               </a>
             </div>
             {/* Placeholder product image */}
-            <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-80">
-              <img src={HERO_SLIDES[heroSlide].image} alt={HERO_SLIDES[heroSlide].title} className="h-full object-contain" />
+            <div className="absolute right-[-3rem] bottom-8 sm:right-8 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 opacity-45 sm:opacity-80 pointer-events-none">
+              <img src={HERO_SLIDES[heroSlide].image} alt={HERO_SLIDES[heroSlide].title} className="h-64 sm:h-72 object-contain" />
             </div>
           </div>
 
@@ -142,13 +141,12 @@ export function HomePage() {
 
       {!showFilteredCatalog && (
         <>
-          {/* ─── Flash Sales ─── */}
           <section className="mb-16">
-        <div className="flex items-end justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
           <div>
             <SectionLabel tag="Today's" />
-            <div className="flex items-center gap-12 -mt-4">
-              <h2 className="text-3xl font-bold">Flash Sales</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-12 -mt-4">
+              <h2 className="text-2xl sm:text-3xl font-bold">Flash Sales</h2>
               <Countdown targetDate={flashSaleEnd} />
             </div>
           </div>
@@ -178,12 +176,11 @@ export function HomePage() {
         </>
       )}
 
-      {/* ─── Browse By Category ─── */}
       <section className="mb-16">
-        <div className="flex items-end justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
           <div>
             <SectionLabel tag="Categories" />
-            <h2 className="text-3xl font-bold -mt-4">Browse By Category</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold -mt-4">Browse By Category</h2>
           </div>
           <div className="flex gap-2">
             {/* <button className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
@@ -228,12 +225,11 @@ export function HomePage() {
 
       {!showFilteredCatalog && (
         <>
-          {/* ─── Best Selling Products ─── */}
           <section className="mb-16">
-            <div className="flex items-end justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
               <div>
                 <SectionLabel tag="This Month" />
-                <h2 className="text-3xl font-bold -mt-4">Best Selling Products</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold -mt-4">Best Selling Products</h2>
               </div>
               <a href="#explore-products">
                 <Button variant="default">View All</Button>
@@ -247,11 +243,10 @@ export function HomePage() {
             </div>
           </section>
 
-          {/* ─── Promo Banner (Music) ─── */}
-          <section className="mb-16 rounded overflow-hidden bg-black relative min-h-[300px] flex items-center px-12">
+          <section className="mb-16 rounded overflow-hidden bg-black relative min-h-[360px] sm:min-h-[300px] flex items-start sm:items-center px-6 sm:px-12 py-8 sm:py-0">
             <div className="z-10 text-white">
               <p className="text-[#00ff66] font-semibold mb-2">Categories</p>
-              <h2 className="text-4xl font-bold leading-tight mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold leading-tight mb-6">
                 Enhance Your
                 <br />
                 Music Experience
@@ -261,19 +256,18 @@ export function HomePage() {
                 <a href="#explore-products">Shop Products</a>
               </Button>
             </div>
-            <div className="absolute right-12 top-1/2 -translate-y-1/2">
-              <img src={JBLSpeaker} alt="JBL Speaker" className="w-72 h-56 object-contain" />
+            <div className="absolute right-[-2rem] bottom-0 sm:right-12 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 opacity-55 sm:opacity-100 pointer-events-none">
+              <img src={JBLSpeaker} alt="JBL Speaker" className="w-64 sm:w-72 h-48 sm:h-56 object-contain" />
             </div>
           </section>
         </>
       )}
 
-      {/* ─── Explore Our Products ─── */}
       <section id="explore-products" className="mb-16">
         <SectionLabel tag="Our Products" />
         <div className="flex flex-col md:flex-row md:items-end justify-between -mt-4 mb-6 gap-4">
           <div>
-            <h2 className="text-3xl font-bold">{catalogHeading}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold">{catalogHeading}</h2>
             {showFilteredCatalog && (
               <p className="text-sm text-gray-500 mt-2">
                 {visibleProducts.length} {visibleProducts.length === 1 ? "product" : "products"} found
@@ -314,10 +308,10 @@ export function HomePage() {
       {!showFilteredCatalog && (
         <section className="mb-16 ">
           <SectionLabel tag="Featured" />
-          <h2 className="text-3xl font-bold -mt-4 mb-8">New Arrival</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[500px]">
+          <h2 className="text-2xl sm:text-3xl font-bold -mt-4 mb-8">New Arrival</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:h-[500px]">
           {/* Large left */}
-          <div className="bg-black rounded overflow-hidden relative group cursor-pointer h-full">
+          <div className="bg-black rounded overflow-hidden relative group cursor-pointer min-h-[320px] md:h-full">
             <img src={PS5Image} alt="PS5" className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-6 left-6 text-white">
               <h3 className="text-xl font-bold">PlayStation 5</h3>
@@ -329,9 +323,9 @@ export function HomePage() {
           </div>
 
           {/* Right column: 3 tiles */}
-          <div className="grid grid-rows-2 gap-4 h-full">
+          <div className="grid grid-rows-none md:grid-rows-2 gap-4 md:h-full">
             {/* Top right */}
-            <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer">
+            <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer min-h-[240px]">
               <img
                 src={WomanWearingHat}
                 alt="Women's Fashion"
@@ -347,8 +341,8 @@ export function HomePage() {
             </div>
 
             {/* Bottom row: 2 tiles */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer min-h-[220px]">
                 <img src={AmazonSpeaker} alt="Speakers" className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity" />
                 <div className="absolute bottom-3 left-3 text-white">
                   <h3 className="text-sm font-bold">Speakers</h3>
@@ -358,7 +352,7 @@ export function HomePage() {
                   </a>
                 </div>
               </div>
-              <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer">
+              <div className="bg-[#1a1a1a] rounded overflow-hidden relative group cursor-pointer min-h-[220px]">
                 <img src={GucciPerfume} alt="Perfume" className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity" />
                 <div className="absolute bottom-3 left-3 text-white">
                   <h3 className="text-sm font-bold">Perfume</h3>
@@ -374,7 +368,6 @@ export function HomePage() {
         </section>
       )}
       {!showFilteredCatalog && <section className="h-70"></section>}
-      {/* ─── Service Features ─── */}
       <section className=" border-t border-gray-200 py-16 mb-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           {[

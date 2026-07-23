@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import QRcode from "@/assets/images/qrcode.png";
 import GooglePlayImage from "@/assets/images/get-it-google-play.png";
 import ApplePlayImage from "@/assets/images/get-it-apple-store.png";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { useSendMarketingEmailMutation } from "@/api/exclusive";
+import { getApiErrorMessage } from "@/utils/api-error";
 const SOCIAL_ICONS = [
   { icon: Facebook, link: "https://www.facebook.com/dennis.soulster.7" },
   { icon: Twitter, link: "https://x.com/solovoi254" },
@@ -16,13 +17,24 @@ const SOCIAL_ICONS = [
 
 export function Footer() {
   const [marketingEmail, setMarketingEmail] = useState("");
-  const [sendMarketingEmail] = useSendMarketingEmailMutation();
-  function sendMarketingEmailHandler() {
-    const email = z.email().parse(marketingEmail);
-    console.log(email);
-    setMarketingEmail("");
-    //TODO send it to the backend and send a marketing email
-    sendMarketingEmail(marketingEmail);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<{ type: "idle" | "success" | "error"; message: string }>({ type: "idle", message: "" });
+  const [sendMarketingEmail, { isLoading: isSubscribing }] = useSendMarketingEmailMutation();
+
+  async function sendMarketingEmailHandler(event: FormEvent) {
+    event.preventDefault();
+    const parsedEmail = z.email().safeParse(marketingEmail.trim());
+    if (!parsedEmail.success) {
+      setSubscriptionStatus({ type: "error", message: "Enter a valid email address." });
+      return;
+    }
+
+    try {
+      const response = await sendMarketingEmail(parsedEmail.data).unwrap();
+      setMarketingEmail("");
+      setSubscriptionStatus({ type: "success", message: response.message });
+    } catch (error) {
+      setSubscriptionStatus({ type: "error", message: getApiErrorMessage(error, "Could not subscribe this email.") });
+    }
   }
   return (
     <footer className="bg-black text-white mt-20">
@@ -33,17 +45,25 @@ export function Footer() {
             <h3 className="text-xl font-bold mb-4">Exclusive</h3>
             <p className="text-sm font-medium mb-4">Subscribe</p>
             <p className="text-sm text-gray-300 mb-4">Get 10% off your first order</p>
-            <div className="flex items-center border border-gray-500 rounded overflow-hidden">
+            <form onSubmit={sendMarketingEmailHandler} className="flex items-center border border-gray-500 rounded overflow-hidden">
               <Input
-                onChange={e => setMarketingEmail(e.target.value)}
+                onChange={e => {
+                  setMarketingEmail(e.target.value);
+                  setSubscriptionStatus({ type: "idle", message: "" });
+                }}
                 value={marketingEmail}
                 placeholder="Enter your email"
+                type="email"
+                aria-label="Email address for offers"
                 className="bg-transparent border-none text-white placeholder:text-gray-500 text-sm focus-visible:ring-0 rounded-none"
               />
-              <button onClick={sendMarketingEmailHandler} className="px-3 shrink-0">
+              <button type="submit" disabled={isSubscribing} className="px-3 shrink-0 disabled:opacity-50" aria-label="Subscribe by email">
                 <Send size={18} className="text-white" />
               </button>
-            </div>
+            </form>
+            {subscriptionStatus.message && (
+              <p className={`mt-2 text-xs ${subscriptionStatus.type === "error" ? "text-red-300" : "text-gray-300"}`}>{subscriptionStatus.message}</p>
+            )}
           </div>
 
           {/* Support */}
@@ -152,7 +172,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">
-          © Copyright Moi University {new Date().getFullYear()}. All right reserved
+          Copyright Moi University {new Date().getFullYear()}. All rights reserved.
         </div>
       </div>
     </footer>

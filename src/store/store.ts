@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { authSlice } from "./slices/authSlice";
 import cartReducer from "./slices/cartSlice";
+import checkoutReducer from "./slices/checkoutSlice";
 import uiReducer from "./slices/uiSlice";
 import wishListReducer from "./slices/wishlistSlice";
 
@@ -10,6 +11,7 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     cart: cartReducer,
+    checkout: checkoutReducer,
     wishlist: wishListReducer,
     ui: uiReducer,
     [api.reducerPath]: api.reducer,

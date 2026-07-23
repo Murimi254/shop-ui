@@ -12,8 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { clearCart, selectCartItems, selectCartSubtotal } from "@/store/slices/cartSlice";
-import type { CreateOrderResponseData } from "@/types/types";
+import { clearCheckoutResult, recordCheckoutResult, selectCheckoutResult, setLastShipmentId } from "@/store/slices/checkoutSlice";
 import { getApiErrorMessage } from "@/utils/api-error";
+import { checkoutStorage } from "@/utils/checkout-storage";
 import { cn, formatPrice } from "@/utils/utility-functions";
 
 type PaymentMethod = "MPESA" | "CASH";
@@ -44,7 +45,7 @@ export function CheckoutPage() {
   const [form, setForm] = useState<CheckoutForm>(initialForm);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof CheckoutForm, string>>>({});
   const [submitError, setSubmitError] = useState("");
-  const [createdOrder, setCreatedOrder] = useState<CreateOrderResponseData | null>(null);
+  const createdOrder = useAppSelector(selectCheckoutResult);
 
   const [previewCart, previewState] = useCartPreviewMutation();
   const [createShipment, createShipmentState] = useCreateShipmentMutation();
@@ -64,8 +65,9 @@ export function CheckoutPage() {
   useEffect(() => {
     if (cartPayload.items.length > 0) {
       previewCart(cartPayload);
+      if (createdOrder) dispatch(clearCheckoutResult());
     }
-  }, [cartPayload, previewCart]);
+  }, [cartPayload, createdOrder, dispatch, previewCart]);
 
   const preview = previewState.data;
   const shipping = preview?.shippingCost ?? 0;
@@ -99,13 +101,14 @@ export function CheckoutPage() {
 
     try {
       await previewCart(cartPayload).unwrap();
-      await createShipment({
+      const shipment = await createShipment({
         addressLine1: form.addressLine1.trim(),
         addressLine2: form.addressLine2.trim() || undefined,
         city: form.city.trim(),
         state: form.state.trim(),
         postalCode: form.postalCode.trim(),
       }).unwrap();
+      dispatch(setLastShipmentId(shipment._id));
 
       const order = await createOrder({
         items: cartPayload.items,
@@ -119,8 +122,8 @@ export function CheckoutPage() {
         }).unwrap();
       }
 
-      localStorage.setItem("exclusive:lastOrderId", order.orderId);
-      setCreatedOrder(order);
+      checkoutStorage.setLastOrderId(order.orderId);
+      dispatch(recordCheckoutResult(order));
       dispatch(clearCart());
     } catch (error) {
       setSubmitError(getApiErrorMessage(error, "Could not place your order. Please try again."));

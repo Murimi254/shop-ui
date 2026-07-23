@@ -37,7 +37,6 @@ const SOCIAL_ICONS: Record<string, React.ElementType> = {
 export function AboutPage() {
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-10">
-      {/* ─── Hero ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
         <div>
           <h1 className="text-4xl font-bold mb-6">Our Story</h1>
@@ -56,7 +55,6 @@ export function AboutPage() {
         </div>
       </div>
 
-      {/* ─── Stats ─── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
         {STATS.map(({ icon: Icon, value, label }) => (
           <div
@@ -74,7 +72,6 @@ export function AboutPage() {
         ))}
       </div>
 
-      {/* ─── Team ─── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
         {TEAM.map(member => (
           <div key={member.name}>

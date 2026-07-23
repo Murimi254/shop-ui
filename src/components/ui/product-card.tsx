@@ -7,10 +7,10 @@ import { formatPrice, cn } from "@/utils/utility-functions";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { toggleWishlist, selectIsWishlisted } from "@/store/slices/wishlistSlice";
 import { addToCart } from "@/store/slices/cartSlice";
-import type { Product } from "@/data/products";
+import type { UiProduct } from "@/types/types";
 
 interface ProductCardProps {
-  product: Product;
+  product: UiProduct;
   showAddToCart?: boolean;
 }
 
@@ -55,8 +55,7 @@ export function ProductCard({ product, showAddToCart = false }: ProductCardProps
           </Badge>
         )}
 
-        {/* Action buttons — visible on hover */}
-        <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={handleToggleWishlist}
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -82,7 +81,7 @@ export function ProductCard({ product, showAddToCart = false }: ProductCardProps
           className={cn(
             "absolute bottom-0 left-0 right-0 bg-black text-white text-center py-2 text-sm font-medium transition-transform duration-200",
             !canAddToCart && "bg-gray-500",
-            showAddToCart ? "translate-y-0" : "translate-y-full group-hover:translate-y-0",
+            showAddToCart ? "translate-y-0" : "translate-y-0 sm:translate-y-full sm:group-hover:translate-y-0",
           )}
         >
           <button onClick={handleAddToCart} disabled={!canAddToCart} className="w-full disabled:cursor-not-allowed">

@@ -7,6 +7,19 @@ interface CountdownProps {
   variant?: "dark" | "light";
 }
 
+function CountdownUnit({ label, value, variant }: { label: string; value: number; variant: "dark" | "light" }) {
+  return (
+    <div className="flex flex-col items-center">
+      <span className={`text-xs ${variant === "dark" ? "text-white" : "text-black"} font-medium`}>{label}</span>
+      <span className={`text-2xl font-bold leading-tight ${variant === "dark" ? "text-white" : "text-black"}`}>{String(value).padStart(2, "0")}</span>
+    </div>
+  );
+}
+
+function CountdownColon() {
+  return <span className="text-[#e07575] text-2xl font-bold self-end mb-0.5">:</span>;
+}
+
 export function Countdown({ targetDate, initialSeconds = 86400, variant = "light" }: CountdownProps) {
   const getTimeLeft = () => {
     if (targetDate) {
@@ -28,30 +41,15 @@ export function Countdown({ targetDate, initialSeconds = 86400, variant = "light
   const mins = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
 
-  const pad = (n: number) => String(n).padStart(2, "0");
-
-  const Unit = ({ label, value }: { label: string; value: number }) => (
-    <div className="flex flex-col items-center">
-      <span className={`text-xs ${variant === "dark" ? "text-white" : "text-black"} font-medium`}>{label}</span>
-      <span className={`text-2xl font-bold leading-tight ${variant === "dark" ? "text-white" : "text-black"}`}>
-        {pad(value)}
-      </span>
-    </div>
-  );
-
-  const Colon = () => (
-    <span className="text-[#e07575] text-2xl font-bold self-end mb-0.5">:</span>
-  );
-
   return (
     <div className="flex items-center gap-2">
-      <Unit label="Days" value={days} />
-      <Colon />
-      <Unit label="Hours" value={hours} />
-      <Colon />
-      <Unit label="Minutes" value={mins} />
-      <Colon />
-      <Unit label="Seconds" value={secs} />
+      <CountdownUnit label="Days" value={days} variant={variant} />
+      <CountdownColon />
+      <CountdownUnit label="Hours" value={hours} variant={variant} />
+      <CountdownColon />
+      <CountdownUnit label="Minutes" value={mins} variant={variant} />
+      <CountdownColon />
+      <CountdownUnit label="Seconds" value={secs} variant={variant} />
     </div>
   );
 }
