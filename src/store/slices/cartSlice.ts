@@ -17,22 +17,7 @@ interface CartState {
 }
 
 const initialState: CartState = {
-  items: [
-    {
-      id: "demo-1",
-      name: "LCD Monitor",
-      price: 650,
-      image: "https://placehold.co/80x80/f5f5f5/333?text=Monitor",
-      quantity: 1,
-    },
-    {
-      id: "demo-2",
-      name: "H1 Gamepad",
-      price: 550,
-      image: "https://placehold.co/80x80/f5f5f5/333?text=Gamepad",
-      quantity: 2,
-    },
-  ],
+  items: [],
   couponCode: "",
   couponDiscount: 0,
 };

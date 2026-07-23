@@ -127,7 +127,7 @@ export function ProductDetailPage() {
             </div>
 
             <Button size="lg" onClick={handleBuyNow} disabled={product.quantity === 0} className="flex-1">
-              Buy Now
+              Add To Cart
             </Button>
 
             <button

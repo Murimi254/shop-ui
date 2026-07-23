@@ -61,7 +61,7 @@ export function HomePage() {
   }
 
   if (isError) {
-    return <h1>OOPS SORRY GUYS</h1>;
+    return <h1>Error Fetching Products.</h1>;
   }
 
   return (

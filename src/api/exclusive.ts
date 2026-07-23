@@ -9,7 +9,7 @@ import { ZodError } from "zod";
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://localhost:3000",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.accessToken;
       if (token) headers.set("Authorization", `Bearer ${token}`);
