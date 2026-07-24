@@ -1,73 +1,169 @@
-# React + TypeScript + Vite
+# Shop UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the Shop e-commerce application. It is a React + TypeScript single-page app built with Vite, TanStack Router, Redux Toolkit, RTK Query, Tailwind CSS, and Radix UI primitives.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Customer storefront with product browsing, product details, cart, wishlist, checkout, account, and order status pages.
+- Authentication flows for sign up, login, logout, refresh tokens, and session restoration.
+- Protected account routes and admin-only dashboard routes.
+- Admin screens for products, categories, and orders.
+- RTK Query API layer with Zod response validation.
+- Product image upload support through the backend product endpoints.
+- M-Pesa STK Push checkout integration through the backend.
+- Product chat widget connected to the backend product assistant endpoint.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- TanStack Router
+- Redux Toolkit and RTK Query
+- Tailwind CSS
+- Radix UI
+- Zod
+- Lucide React
 
-## Expanding the ESLint configuration
+## Requirements
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js 20 or newer is recommended.
+- npm
+- The backend server running locally or deployed somewhere reachable by the browser.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Install dependencies:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Create a local environment file:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+Copy-Item .env.example .env
 ```
+
+Set the API URL in `.env`:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+Start the development server:
+
+```powershell
+npm run dev
+```
+
+Vite will print the local URL, usually:
+
+```text
+http://localhost:5173
+```
+
+## Available Scripts
+
+```powershell
+npm run dev
+```
+
+Runs the Vite development server with hot module replacement.
+
+```powershell
+npm run build
+```
+
+Type-checks the project and creates a production build in `dist`.
+
+```powershell
+npm run preview
+```
+
+Serves the production build locally for final verification.
+
+```powershell
+npm run lint
+```
+
+Runs ESLint across the project.
+
+## Environment Variables
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `VITE_API_URL` | Yes | Base URL for the backend API. Defaults to `http://localhost:3000` in code when missing. |
+
+Only variables prefixed with `VITE_` are exposed to the browser by Vite.
+
+## Project Structure
+
+```text
+src/
+  api/              RTK Query API slice and authenticated base query
+  assets/           Static assets imported by React components
+  components/       Reusable UI, layout, guards, and widgets
+  hooks/            Typed Redux hooks
+  pages/            Route page components
+  routes/           TanStack Router file routes
+  store/            Redux store and feature slices
+  types/            TypeScript types and Zod schemas
+  utils/            Token, checkout, API error, and formatting utilities
+```
+
+## Routing
+
+Routes are defined with TanStack Router under `src/routes`.
+
+Main customer routes:
+
+- `/`
+- `/about`
+- `/contact`
+- `/login`
+- `/sign-up`
+- `/product/$productId`
+- `/cart`
+- `/wishlist`
+- `/checkout`
+- `/account`
+- `/order-status`
+
+Admin routes:
+
+- `/admin`
+- `/admin/products`
+- `/admin/categories`
+- `/admin/orders`
+
+Admin pages are protected by `RequireAdmin`, which allows users with the `admin` or `superAdmin` role.
+
+## API Integration
+
+The API client is defined in `src/api/exclusive.ts`. Requests use `baseQueryWithReauth`, which:
+
+- Reads the API base URL from `VITE_API_URL`.
+- Adds the current access token to authenticated requests.
+- Refreshes expired access tokens using the stored refresh token.
+- Logs the user out locally when refresh fails.
+- Normalizes API errors for the UI.
+
+The UI expects the backend to expose endpoints for auth, categories, products, cart previews, shipments, orders, invoices, M-Pesa STK Push, marketing email capture, and product chat.
+
+## Build Output
+
+Production assets are generated in:
+
+```text
+dist/
+```
+
+Do not edit files in `dist` directly. Change the source files under `src`, then rebuild.
+
+## Notes for Development
+
+- Keep request and response schemas in `src/types/zod-schemas.ts` aligned with the backend response shape.
+- Keep shared domain types in `src/types/types.ts` aligned with the backend models and handlers.
+- When adding new API endpoints, add the RTK Query endpoint, the request/response types, and the Zod schemas together.
+- If auth behavior changes, update both `src/api/base-query-with-reauth.ts` and the auth slice.
