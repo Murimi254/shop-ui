@@ -1,4 +1,8 @@
 import { Users, DollarSign, ShoppingBag, TrendingUp, Twitter, Instagram, Linkedin } from "lucide-react";
+import AboutUsImage from "../../public/images/about-us.png";
+import Will from "../../public/images/will.png";
+import Emma from "../../public/images/emma.png";
+import Tom from "../../public/images/tom.png";
 
 const STATS = [
   { icon: ShoppingBag, value: "10.5k", label: "Sellers active our site" },
@@ -11,19 +15,19 @@ const TEAM = [
   {
     name: "Tom Cruise",
     role: "Founder & Chairman",
-    image: "https://placehold.co/300x340/f5f5f5/333?text=Tom",
+    image: Tom,
     socials: ["twitter", "instagram", "linkedin"],
   },
   {
     name: "Emma Watson",
     role: "Managing Director",
-    image: "https://placehold.co/300x340/f5f5f5/333?text=Emma",
+    image: Emma,
     socials: ["twitter", "instagram", "linkedin"],
   },
   {
     name: "Will Smith",
     role: "Product Designer",
-    image: "https://placehold.co/300x340/f5f5f5/333?text=Will",
+    image: Will,
     socials: ["twitter", "instagram", "linkedin"],
   },
 ];
@@ -51,7 +55,7 @@ export function AboutPage() {
           </p>
         </div>
         <div className="overflow-hidden rounded">
-          <img src="https://placehold.co/600x480/f5f5f5/aaaaaa?text=Shopping+Experience" alt="Shopping" className="w-full h-full object-cover" />
+          <img src={AboutUsImage} alt="Shopping" className="w-full h-full object-cover" />
         </div>
       </div>
 

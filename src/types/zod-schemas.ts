@@ -199,12 +199,16 @@ export const OrderSummarySchema = z.object({
   subTotal: z.number().nonnegative(),
   fullName: z.string(),
   orderStatus: OrderStatusSchema,
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export const AdminOrdersResponseSchema = z.object({
   orders: z.array(OrderSummarySchema),
   message: z.string().optional(),
 });
+
+export const CustomerOrdersResponseSchema = AdminOrdersResponseSchema;
 
 export const OrderStatusResponseSchema = z.object({
   orderId: IdSchema,
@@ -270,3 +274,11 @@ export const MarketingEmailRequestSchema = z.object({
 });
 
 export const MarketingEmailResponseSchema = MessageResponseSchema;
+
+export const ProductChatRequestSchema = z.object({
+  message: z.string().trim().min(1).max(500),
+});
+
+export const ProductChatResponseSchema = z.object({
+  reply: z.string(),
+});

@@ -15,6 +15,7 @@ import type {
   CategoryResponseData,
   CreateOrderRequestData,
   CreateOrderResponseData,
+  CustomerOrdersResponseData,
   DeleteModelRequestData,
   EditShipmentRequestData,
   LoginCredentialsData,
@@ -23,6 +24,8 @@ import type {
   MessageResponseData,
   OrderStatusResponseData,
   OrderSummaryData,
+  ProductChatRequestData,
+  ProductChatResponseData,
   ProductCreateRequestData,
   ProductEditRequestData,
   ProductsViewModel,
@@ -48,6 +51,7 @@ import {
   CategoryResponseSchema,
   CreateOrderRequestSchema,
   CreateOrderResponseSchema,
+  CustomerOrdersResponseSchema,
   DeleteModelRequestSchema,
   EditShipmentRequestSchema,
   LoginCredentialsSchema,
@@ -57,6 +61,8 @@ import {
   MessageResponseSchema,
   OrderStatusResponseSchema,
   OrderSummarySchema,
+  ProductChatRequestSchema,
+  ProductChatResponseSchema,
   ProductCreateRequestSchema,
   ProductEditRequestSchema,
   RestoreSessionResponseSchema,
@@ -235,6 +241,12 @@ const api = createApi({
       providesTags: (_result, _error, orderId) => [{ type: "Orders", id: orderId }],
     }),
 
+    getCustomerOrders: builder.query<CustomerOrdersResponseData, void>({
+      query: () => ({ url: "/customer-orders", method: "GET" }),
+      transformResponse: response => CustomerOrdersResponseSchema.parse(response),
+      providesTags: ["Orders"],
+    }),
+
     cancelOrder: builder.mutation<OrderStatusResponseData, CancelOrderRequestData>({
       query: data => ({ url: "/cancel-order", method: "POST", body: CancelOrderRequestSchema.parse(data) }),
       transformResponse: response => OrderStatusResponseSchema.parse(response),
@@ -298,6 +310,11 @@ const api = createApi({
       query: email => ({ url: "/send-marketing-email", method: "POST", body: MarketingEmailRequestSchema.parse({ email }) }),
       transformResponse: response => MarketingEmailResponseSchema.parse(response),
     }),
+
+    productChat: builder.mutation<ProductChatResponseData, ProductChatRequestData>({
+      query: message => ({ url: "/chat/products", method: "POST", body: ProductChatRequestSchema.parse(message) }),
+      transformResponse: response => ProductChatResponseSchema.parse(response),
+    }),
   }),
 });
 
@@ -330,6 +347,7 @@ export const {
   useGetAdminCategoriesQuery,
   useGetAdminProductsQuery,
   useGetCategoriesQuery,
+  useGetCustomerOrdersQuery,
   useGetOrderQuery,
   useGetProductQuery,
   useGetProductsQuery,
@@ -337,6 +355,7 @@ export const {
   useInitiateSTKPushMutation,
   useLoginMutation,
   useLogoutMutation,
+  useProductChatMutation,
   useRefreshTokenMutation,
   useSendMarketingEmailMutation,
   useSignupMutation,

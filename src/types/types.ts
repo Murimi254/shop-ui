@@ -15,6 +15,7 @@ import {
   CategoryResponseSchema,
   CreateOrderRequestSchema,
   CreateOrderResponseSchema,
+  CustomerOrdersResponseSchema,
   DeleteModelRequestSchema,
   EditShipmentRequestSchema,
   LoginCredentialsSchema,
@@ -25,6 +26,8 @@ import {
   OrderStatusResponseSchema,
   OrderSummarySchema,
   ProductCreateRequestSchema,
+  ProductChatRequestSchema,
+  ProductChatResponseSchema,
   ProductEditRequestSchema,
   ProductsViewModelSchema,
   RefreshResponseSchema,
@@ -71,6 +74,7 @@ export type CreateOrderRequestData = z.infer<typeof CreateOrderRequestSchema>;
 export type CreateOrderResponseData = z.infer<typeof CreateOrderResponseSchema>;
 export type OrderSummaryData = z.infer<typeof OrderSummarySchema>;
 export type AdminOrdersResponseData = z.infer<typeof AdminOrdersResponseSchema>;
+export type CustomerOrdersResponseData = z.infer<typeof CustomerOrdersResponseSchema>;
 export type CancelOrderRequestData = z.infer<typeof CancelOrderRequestSchema>;
 export type OrderStatusResponseData = z.infer<typeof OrderStatusResponseSchema>;
 export type ApproveCashPaymentRequestData = z.infer<typeof ApproveCashPaymentRequestSchema>;
@@ -79,6 +83,8 @@ export type STKPushRequestData = z.infer<typeof STKPushRequestSchema>;
 export type STKPushResponseData = z.infer<typeof STKPushResponseSchema>;
 
 export type ProductCreateRequestData = z.infer<typeof ProductCreateRequestSchema>;
+export type ProductChatRequestData = z.infer<typeof ProductChatRequestSchema>;
+export type ProductChatResponseData = z.infer<typeof ProductChatResponseSchema>;
 export type ProductEditRequestData = z.infer<typeof ProductEditRequestSchema>;
 export type DeleteModelRequestData = z.infer<typeof DeleteModelRequestSchema>;
 

@@ -85,15 +85,18 @@ export function SignUpPage() {
           />
           {showPassword ? <Eye onClick={showPasswordHandler} color="#787F8A" /> : <EyeOff onClick={showPasswordHandler} color="#787F8A" />}
         </div>
-        <Input
-          type={showPassword ? "text" : "password"}
-          placeholder="Confirm password"
-          value={form.passwordConfirm}
-          onChange={handleChange("passwordConfirm")}
-          autoComplete="new-password"
-          aria-invalid={Boolean(formError)}
-          className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
-        />
+        <div className="flex justify-between border-0 border-b border-gray-300">
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="Confirm password"
+            value={form.passwordConfirm}
+            onChange={handleChange("passwordConfirm")}
+            autoComplete="new-password"
+            aria-invalid={Boolean(formError)}
+            className="border-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black bg-transparent"
+          />
+          {showPassword ? <Eye onClick={showPasswordHandler} color="#787F8A" /> : <EyeOff onClick={showPasswordHandler} color="#787F8A" />}
+        </div>
 
         {formError && <p className="text-sm text-[#db4444]">{formError}</p>}
 

@@ -44,7 +44,10 @@ export function HomePage() {
   const navigate = useNavigate({ from: "/" });
   const searchTerm = search.q ?? "";
   const activeCategory = search.category ?? "";
-  const { data, isLoading, isError } = useGetProductsQuery({ limit: 30, search: searchTerm || undefined });
+  const { data, isLoading, isError } = useGetProductsQuery(
+    { limit: 30, search: searchTerm || undefined },
+    { refetchOnMountOrArgChange: true },
+  );
   const { data: categories = [], isLoading: isLoadingCategories } = useGetCategoriesQuery();
   const [heroSlide, setHeroSlide] = useState(0);
 

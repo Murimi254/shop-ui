@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import { AnnouncementBar } from "./announcement-bar";
 import { Footer } from "./footer";
 import { Header } from "./header";
+import { ProductChatWidget } from "../product-chat-widget";
 
 export function RootLayout() {
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ export function RootLayout() {
         <Outlet />
       </main>
       <Footer />
+      <ProductChatWidget />
     </div>
   );
 }
