@@ -40,7 +40,6 @@ Frontend for the Shop e-commerce application. It is a React + TypeScript single-
 </p>
 
 <p align="center">
-  <img src="public/screenshots/Screenshot 2026-07-27 155238.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155306.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155323.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155147.png" width="220"/>
