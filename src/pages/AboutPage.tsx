@@ -1,8 +1,8 @@
 import { Users, DollarSign, ShoppingBag, TrendingUp, Twitter, Instagram, Linkedin } from "lucide-react";
-import AboutUsImage from "../../public/images/about-us.png";
-import Will from "../../public/images/will.png";
-import Emma from "../../public/images/emma.png";
-import Tom from "../../public/images/tom.png";
+import AboutUsImage from "/images/about-us.png";
+import Will from "/images/will.png";
+import Emma from "/images/emma.png";
+import Tom from "/images/tom.png";
 
 const STATS = [
   { icon: ShoppingBag, value: "10.5k", label: "Sellers active our site" },

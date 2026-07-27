@@ -13,6 +13,36 @@ Frontend for the Shop e-commerce application. It is a React + TypeScript single-
 - M-Pesa STK Push checkout integration through the backend.
 - Product chat widget connected to the backend product assistant endpoint.
 
+<h2 align="center">Screenshots.</h2>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot 2026-07-27 155101.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155120.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155357.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155209.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot 2026-07-27 155419.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155436.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155510.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155625.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot 2026-07-27 155731.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155754.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155823.png" width="220"/> 
+  <img src="public/screenshots/Screenshot 2026-07-27 155857.png" width="220"/> 
+</p>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot 2026-07-27 155238.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155306.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155323.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155147.png" width="220"/>
+</p>
+
 ## Tech Stack
 
 - React 19
@@ -91,9 +121,9 @@ Runs ESLint across the project.
 
 ## Environment Variables
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `VITE_API_URL` | Yes | Base URL for the backend API. Defaults to `http://localhost:3000` in code when missing. |
+| Variable       | Required | Description                                                                             |
+| -------------- | -------- | --------------------------------------------------------------------------------------- |
+| `VITE_API_URL` | Yes      | Base URL for the backend API. Defaults to `http://localhost:3000` in code when missing. |
 
 Only variables prefixed with `VITE_` are exposed to the browser by Vite.
 
