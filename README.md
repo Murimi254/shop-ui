@@ -19,21 +19,24 @@ Frontend for the Shop e-commerce application. It is a React + TypeScript single-
   <img src="public/screenshots/Screenshot 2026-07-27 155101.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155120.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155357.png" width="220"/> 
-  <img src="public/screenshots/Screenshot 2026-07-27 155209.png" width="220"/>
 </p>
 
 <p align="center">
   <img src="public/screenshots/Screenshot 2026-07-27 155419.png" width="220"/> 
   <img src="public/screenshots/Screenshot 2026-07-27 155436.png" width="220"/> 
   <img src="public/screenshots/Screenshot 2026-07-27 155510.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="public/screenshots/Screenshot 2026-07-27 155209.png" width="220"/>
   <img src="public/screenshots/Screenshot 2026-07-27 155625.png" width="220"/>
+  <img src="public/screenshots/Screenshot 2026-07-27 155857.png" width="220"/> 
 </p>
 
 <p align="center">
   <img src="public/screenshots/Screenshot 2026-07-27 155731.png" width="220"/> 
   <img src="public/screenshots/Screenshot 2026-07-27 155754.png" width="220"/> 
   <img src="public/screenshots/Screenshot 2026-07-27 155823.png" width="220"/> 
-  <img src="public/screenshots/Screenshot 2026-07-27 155857.png" width="220"/> 
 </p>
 
 <p align="center">
